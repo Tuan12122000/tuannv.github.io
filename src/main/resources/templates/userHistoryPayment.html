@@ -1,0 +1,90 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en"-->
+<!--      xmlns:th="http://www.thymeleaf.org"-->
+<!--&gt;-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Thanh toán dịch vụ môi trường</title>-->
+
+<!--    &lt;!&ndash; Liên kết CSS Bootstrap bằng CDN &ndash;&gt;-->
+<!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"-->
+<!--          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">-->
+<!--    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>-->
+<!--    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>-->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"-->
+<!--          integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="-->
+<!--          crossorigin="anonymous" referrerpolicy="no-referrer"/>-->
+<!--    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>-->
+<!--    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>-->
+<!--</head>-->
+
+<!--<body>-->
+<!--&lt;!&ndash; Main content &ndash;&gt;-->
+<!--<div class="container">-->
+<!--    <div class="col-md-14">-->
+<!--        <a th:href="@{/login}" class="btn btn-primary float-right btn-sm">Thoát</a>-->
+<!--    </div>-->
+<!--    <h1>Danh sách Các Giao Dịch</h1>-->
+<!--    <form th:action="@{/history/user/payment}">-->
+<!--        <div class="row d-flex">-->
+<!--            <div class="col-md-4">-->
+<!--                <label id="keyword" class="col-form-label">Tìm Kiếm</label>-->
+<!--                <input type="text" class="form-control" name="keyword" th:value="${keyword}">-->
+<!--            </div>-->
+<!--            <div class="col-md-2">-->
+<!--                <label class="col-form-label">&nbsp;</label> <br>-->
+<!--                <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Tìm</button>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </form>-->
+<!--    <div class="row mt-4">-->
+<!--        <div class="col-md-12">-->
+<!--            <table class="table table-borderd">-->
+<!--                <thead>-->
+<!--                <tr>-->
+<!--                    <th scope="col">Id</th>-->
+<!--                    <th scope="col">Họ Tên</th>-->
+<!--                    <th scope="col">Địa Chỉ</th>-->
+<!--                    <th scope="col">Mã Khách Hàng</th>-->
+<!--                    <th scope="col">Số Tiền</th>-->
+<!--                    <th scope="col">Thời Gian Tạo</th>-->
+<!--                    <th scope="col">Nội Dung</th>-->
+<!--                </tr>-->
+<!--                </thead>-->
+<!--                <tbody>-->
+<!--                <tr th:each="payment : ${payments}">-->
+<!--                    <th scope="row">[[${payment.id}]]</th>-->
+<!--                    <td>[[${payment.name}]]</td>-->
+<!--                    <td>[[${payment.address}]]</td>-->
+<!--                    <td>[[${payment.userId}]]</td>-->
+<!--                    <td>[[${payment.amount}]]</td>-->
+<!--                    <td>[[${payment.timeCreated}]]</td>-->
+<!--                    <td>[[${payment.description}]]</td>-->
+<!--                </tr>-->
+<!--                </tbody>-->
+<!--            </table>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Liên kết JS Jquery bằng CDN &ndash;&gt;-->
+<!--<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"-->
+<!--        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"-->
+<!--        crossorigin="anonymous"></script>-->
+
+<!--&lt;!&ndash; Liên kết JS Popper bằng CDN &ndash;&gt;-->
+<!--<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"-->
+<!--        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"-->
+<!--        crossorigin="anonymous"></script>-->
+
+<!--&lt;!&ndash; Liên kết JS Bootstrap bằng CDN &ndash;&gt;-->
+<!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"-->
+<!--        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"-->
+<!--        crossorigin="anonymous"></script>-->
+
+<!--&lt;!&ndash; Liên kết JS FontAwesome bằng CDN &ndash;&gt;-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>-->
+<!--</body>-->
+
+<!--</html>-->
