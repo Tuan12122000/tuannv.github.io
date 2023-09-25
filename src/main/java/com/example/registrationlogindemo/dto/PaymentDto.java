@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -17,4 +18,6 @@ public class PaymentDto {
     private long userId;        //Là tên của đơn vị
     private double amount;
     private String address;
+    private String description;
+    private Date timeCreated;
 }

@@ -109,13 +109,7 @@ public class AuthController {
             return "login";
         }
         try {
-            List<Payment> paymentList = new ArrayList<Payment>();
-            if (keyword == null) {
-                paymentRepository.search((keyword)).forEach(paymentList::add);
-            } else {
-                paymentRepository.findByNameContainingIgnoreCase(keyword).forEach(paymentList::add);
-                model.addAttribute("keyword", keyword);
-            }
+            List<PaymentDto> paymentList = userService.getListPayments();
             model.addAttribute("payments", paymentList);
         } catch (Exception e) {
             model.addAttribute("message", e.getMessage());

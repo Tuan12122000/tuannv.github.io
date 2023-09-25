@@ -1,24 +1,28 @@
 package com.example.registrationlogindemo.Excel;
 
-import com.example.registrationlogindemo.entity.Payment;
+import com.example.registrationlogindemo.dto.PaymentDto;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class PaymentExcelExporter {
     private XSSFWorkbook workbook;
     private XSSFSheet sheet;
-    private List<Payment> listPayments;
+    private List<PaymentDto> listPayments;
 
-    public PaymentExcelExporter(List<Payment> listPayments) {
+    public PaymentExcelExporter(List<PaymentDto> listPayments) {
         this.listPayments = listPayments;
         workbook = new XSSFWorkbook();
     }
@@ -36,12 +40,12 @@ public class PaymentExcelExporter {
         style.setFont(font);
 
         createCell(row, 0, "id", style);
-        createCell(row, 1, "name", style);
-        createCell(row, 2, "userId", style);
-        createCell(row, 3, "amount", style);
-        createCell(row, 4, "address", style);
-        createCell(row, 5, "description", style);
-        createCell(row, 6, "timeCreated", style);
+        createCell(row, 1, "Họ Tên", style);
+        createCell(row, 2, "Mã Khách Hàng", style);
+        createCell(row, 3, "Số Tiền", style);
+        createCell(row, 4, "Địa Chỉ", style);
+        createCell(row, 5, "Nội Dung", style);
+        createCell(row, 6, "Thời Gian Tạo Giao Dịch", style);
 
     }
 
@@ -54,7 +58,9 @@ public class PaymentExcelExporter {
             cell.setCellValue((Double) value);
         } else if (value instanceof Long) {
             cell.setCellValue((Long) value);
-        }else {
+        } else if (value instanceof Date) {
+            cell.setCellValue((Date) value);
+        } else {
             cell.setCellValue((String) value);
         }
         cell.setCellStyle(style);
@@ -65,10 +71,11 @@ public class PaymentExcelExporter {
 
         CellStyle style = workbook.createCellStyle();
         XSSFFont font = workbook.createFont();
+        CreationHelper createHelper = workbook.getCreationHelper();
         font.setFontHeight(14);
         style.setFont(font);
 
-        for (Payment payment : listPayments) {
+        for (PaymentDto payment : listPayments) {
             Row row = sheet.createRow(rowCount++);
             int columnCount = 0;
 

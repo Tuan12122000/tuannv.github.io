@@ -2,6 +2,7 @@ package com.example.registrationlogindemo.controller;
 
 
 import com.example.registrationlogindemo.Excel.PaymentExcelExporter;
+import com.example.registrationlogindemo.dto.PaymentDto;
 import com.example.registrationlogindemo.entity.Payment;
 import com.example.registrationlogindemo.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,7 +32,7 @@ public class ExcelExportController {
         String headerValue = "attachment; filename=users_" + currentDateTime + ".xlsx";
         response.setHeader(headerKey, headerValue);
 
-        List<Payment> paymentList = service.listAllPayment();
+        List<PaymentDto> paymentList = service.getListPayments();
 
         PaymentExcelExporter excelExporter = new PaymentExcelExporter(paymentList);
 

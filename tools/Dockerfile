@@ -12,6 +12,7 @@ WORKDIR $HOME
 LABEL maintainer="tuan"
 
 RUN apt-get update; apt-get install -y supervisor
+RUN apt install -y libfreetype6 libfontconfig1
 RUN mkdir -p /data/thanhtoan
 
 COPY ./app.jar $HOME/thanhtoan/
