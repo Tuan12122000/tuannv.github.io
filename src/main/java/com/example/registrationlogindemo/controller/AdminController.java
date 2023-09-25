@@ -45,7 +45,7 @@ public class AdminController {
     @GetMapping("/users")
     private String getAll(@Param("keyword") String keyword, @AuthenticationPrincipal UserDetails userDetails, Model model) {
         User user = userService.findByEmail(userDetails.getUsername());
-        if (user == null){
+        if (user == null) {
             return "login";
         }
         try {
@@ -65,17 +65,19 @@ public class AdminController {
     }
 
     @GetMapping("/users/{id}")
-    private String editTutorial(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
+    private String editTutorial(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes, @AuthenticationPrincipal UserDetails userDetails) {
         try {
-            User user = userRepository.findById(id).get();
-
-            model.addAttribute("user", user);
-            model.addAttribute("pageTitle", "Sửa (ID: " + id + ")");
-
-            return "register";
+            User user = userService.findByEmail(userDetails.getUsername());
+            if (user.getEmail().equals("admin@gmail.com")) {
+                User editUser = userRepository.findById(id).get();
+                model.addAttribute("user", editUser);
+                model.addAttribute("pageTitle", "Sửa (ID: " + id + ")");
+                return "register";
+            }else {
+                return "login";
+            }
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
-
             return "redirect:/users";
         }
     }

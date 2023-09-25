@@ -16,7 +16,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,20 +66,24 @@ public class UserServiceImpl implements UserService {
 
     //Dùng cho hàm PaymentUser
 
-//    @Override
-//    public PaymentDto getUserId(Long userId) {
-//        return this.convertPaymentToDto(paymentRepository.findByUserId(userId));
-//    }
-//
-//    private PaymentDto convertPaymentToDto(Payment payment) {
-//        PaymentDto paymentDto = new PaymentDto();
-//        paymentDto.setId(payment.getId());
-//        paymentDto.setName(payment.getName());
-//        paymentDto.setUserId(payment.getUserId());
-//        paymentDto.setAmount(payment.getAmount());
-//        paymentDto.setAddress(payment.getAddress());
-//        return paymentDto;
-//    }
+    @Override
+    public List<PaymentDto> getListPayments() {
+        return paymentRepository.findAll().stream()
+                .map(this::convertPaymentToDto)
+                .collect(Collectors.toList());
+    }
+
+    private PaymentDto convertPaymentToDto(Payment payment) {
+        PaymentDto paymentDto = new PaymentDto();
+        paymentDto.setId(payment.getId());
+        paymentDto.setName(payment.getName());
+        paymentDto.setUserId(payment.getUserId());
+        paymentDto.setAmount(payment.getAmount());
+        paymentDto.setAddress(payment.getAddress());
+        paymentDto.setDescription(payment.getDescription());
+        paymentDto.setTimeCreated(new Date(payment.getTimeCreated()));
+        return paymentDto;
+    }
 
     @Override
     public void savePayment(PaymentDto paymentDto) {
