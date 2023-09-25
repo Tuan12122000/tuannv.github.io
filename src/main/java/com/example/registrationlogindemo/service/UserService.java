@@ -14,6 +14,7 @@ public interface UserService {
 
     List<Payment> listAllPayment();
 
-//    PaymentDto getUserId(Long userId);
+    List<PaymentDto> getListPayments();
+
     void savePayment(PaymentDto paymentDto);
 }
