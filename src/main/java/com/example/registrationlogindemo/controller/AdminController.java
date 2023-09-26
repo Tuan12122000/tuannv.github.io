@@ -10,8 +10,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
@@ -26,21 +28,21 @@ public class AdminController {
     @Autowired
     private final UserService userService;
 
-    //    @GetMapping("/users")
-//    public String listRegisteredUsers(Model model) {
-//        List<UserDto> users = userService.findAllUsers();
-//        model.addAttribute("users", users);
-//        return "users";
-//    }
-//    @GetMapping("/user/new")
-//    public String addUser(Model model) {
-//        User user = new User();
-//
-//        model.addAttribute("user", user);
-//        model.addAttribute("pageTitle", "Tạo Thanh Toán Thành Công");
-//
-//        return "register";
-//    }
+    @PostMapping("/edit/user/save")
+    public String saveUpdateUser(User user, RedirectAttributes redirectAttributes, BindingResult result) {
+        try {
+            if (user.getEmail() != null) {
+                result.rejectValue("email", null, "Email đã tồn tại");
+                return "editUser";
+            }
+            userRepository.save(user);
+            redirectAttributes.addFlashAttribute("message", "Thành Công");
+        } catch (Exception e) {
+            redirectAttributes.addAttribute("message", e.getMessage());
+        }
+
+        return "redirect:/users";
+    }
 
     @GetMapping("/users")
     private String getAll(@Param("keyword") String keyword, @AuthenticationPrincipal UserDetails userDetails, Model model) {
@@ -65,20 +67,15 @@ public class AdminController {
     }
 
     @GetMapping("/users/{id}")
-    private String editTutorial(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes, @AuthenticationPrincipal UserDetails userDetails) {
+    private String editUser(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
         try {
-            User user = userService.findByEmail(userDetails.getUsername());
-            if (user.getEmail().equals("admin@gmail.com")) {
-                User editUser = userRepository.findById(id).get();
-                model.addAttribute("user", editUser);
-                model.addAttribute("pageTitle", "Sửa (ID: " + id + ")");
-                return "register";
-            }else {
-                return "login";
-            }
+            User editUser = userRepository.findById(id).get();
+            model.addAttribute("user", editUser);
+            model.addAttribute("pageTitle", "Sửa (ID: " + id + ")");
+            return "editUser";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
-            return "redirect:/users";
+            return "users";
         }
     }
 

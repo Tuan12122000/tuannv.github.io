@@ -12,14 +12,14 @@ import com.example.registrationlogindemo.repository.UserRepository;
 import com.example.registrationlogindemo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
         paymentDto.setAmount(payment.getAmount());
         paymentDto.setAddress(payment.getAddress());
         paymentDto.setDescription(payment.getDescription());
-        paymentDto.setTimeCreated(new Date(payment.getTimeCreated()));
+        paymentDto.setTimeCreated(Instant.ofEpochMilli(payment.getTimeCreated()).atZone(ZoneId.of("GMT+7")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         return paymentDto;
     }
 
