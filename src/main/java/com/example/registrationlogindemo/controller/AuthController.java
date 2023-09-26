@@ -54,18 +54,24 @@ public class AuthController {
                                 BindingResult result,
                                 Model model) {
         User existing = userService.findByEmail(user.getEmail());
-        if (existing != null) {
-            result.rejectValue("email", null, "Email đã tồn tại");
-        }
-        if (result.hasErrors()) {
+        try {
+            if (existing != null) {
+                result.rejectValue("email", null, "Email đã tồn tại");
+            }
+            if (result.hasErrors()) {
+                model.addAttribute("user", user);
+                return "register";
+            }
+            userService.saveUser(user);
             model.addAttribute("user", user);
-            return "register";
+            return "users";
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
-        userService.saveUser(user);
         return "redirect:/register?success";
     }
 
-    @GetMapping("/payment")
+        @GetMapping("/payment")
     public String payment(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         User user = userService.findByEmail(userDetails.getUsername());
         if (user.getEmail().equals("admin@gmail.com")) {
