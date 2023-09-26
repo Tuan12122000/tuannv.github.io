@@ -28,21 +28,6 @@ public class AdminController {
     @Autowired
     private final UserService userService;
 
-    @PostMapping("/edit/user/save")
-    public String saveUpdateUser(User user, RedirectAttributes redirectAttributes, BindingResult result) {
-        try {
-            if (user.getEmail() != null) {
-                result.rejectValue("email", null, "Email đã tồn tại");
-                return "editUser";
-            }
-            userRepository.save(user);
-            redirectAttributes.addFlashAttribute("message", "Thành Công");
-        } catch (Exception e) {
-            redirectAttributes.addAttribute("message", e.getMessage());
-        }
-
-        return "redirect:/users";
-    }
 
     @GetMapping("/users")
     private String getAll(@Param("keyword") String keyword, @AuthenticationPrincipal UserDetails userDetails, Model model) {
@@ -67,7 +52,7 @@ public class AdminController {
     }
 
     @GetMapping("/users/{id}")
-    private String editUser(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
+    private String editUsers(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes, @AuthenticationPrincipal UserDetails userDetails) {
         try {
             User editUser = userRepository.findById(id).get();
             model.addAttribute("user", editUser);
@@ -75,8 +60,21 @@ public class AdminController {
             return "editUser";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
-            return "users";
+            return "redirect:/users";
         }
+    }
+
+    @PostMapping("/edit/user/save")
+    public String saveUpdateUser(User user, RedirectAttributes redirectAttributes, BindingResult result) {
+        User existing = userService.findByEmail(user.getEmail());
+        if (existing != null) {
+            result.rejectValue("email", null, "Email đã tồn tại");
+        } else {
+            userRepository.save(user);
+            redirectAttributes.addFlashAttribute("message", "Thành Công");
+            return "redirect:/users";
+        }
+        return "editUser";
     }
 
     @GetMapping("/users/delete/{id}")
@@ -88,7 +86,6 @@ public class AdminController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
         }
-
         return "redirect:/users";
     }
 }

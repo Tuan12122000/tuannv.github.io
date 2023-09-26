@@ -12,14 +12,14 @@ import com.example.registrationlogindemo.repository.UserRepository;
 import com.example.registrationlogindemo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
         PaymentDto paymentDto = new PaymentDto();
         paymentDto.setId(payment.getId());
         paymentDto.setName(payment.getName());
-        paymentDto.setUserId(payment.getUserId());
+        paymentDto.setUserId(String.valueOf(payment.getUserId()));
         paymentDto.setAmount(payment.getAmount());
         paymentDto.setAddress(payment.getAddress());
         paymentDto.setDescription(payment.getDescription());
@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService {
         long timeStampMillis = instant.toEpochMilli();
         Payment payment = new Payment();
         payment.setName(paymentDto.getName());
-        payment.setUserId(paymentDto.getUserId());
+        payment.setUserId(String.valueOf(paymentDto.getUserId()));
         payment.setAmount(paymentDto.getAmount());
         payment.setTimeCreated(timeStampMillis);
         payment.setAddress(paymentDto.getAddress());
