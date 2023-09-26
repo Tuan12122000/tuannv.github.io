@@ -15,7 +15,7 @@ import java.util.Date;
 public class PaymentDto {
     private long id;
     private String name;
-    private long userId;        //Là tên của đơn vị
+    private String userId;        //Là tên của đơn vị
     private double amount;
     private String address;
     private String description;
