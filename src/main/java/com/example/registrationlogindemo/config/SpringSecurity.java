@@ -3,9 +3,12 @@ package com.example.registrationlogindemo.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,7 +35,7 @@ public class SpringSecurity {
                                 .requestMatchers("/users/**").hasRole("ADMIN")
                                 .requestMatchers("/payments/**").hasRole("ADMIN")
                                 .requestMatchers("/payment/**").hasAnyRole("ADMIN", "USER")
-//                                .requestMatchers("/history/user/payment").hasRole( "USER")
+                                .requestMatchers("/edit/user/save").hasRole( "ADMIN")
 
                 ).formLogin(
                 form -> form

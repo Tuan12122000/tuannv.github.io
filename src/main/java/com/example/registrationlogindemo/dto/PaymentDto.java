@@ -19,5 +19,5 @@ public class PaymentDto {
     private double amount;
     private String address;
     private String description;
-    private Date timeCreated;
+    private String timeCreated;
 }
