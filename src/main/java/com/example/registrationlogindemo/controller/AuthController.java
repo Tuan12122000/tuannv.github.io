@@ -83,16 +83,6 @@ public class AuthController {
         return "payment";
     }
 
-//    @GetMapping("/history/user/payment")
-//    public String listHistoryPaymentUser(@AuthenticationPrincipal UserDetails userDetails, Model model, Payment payment) {
-//        User user = userService.findByEmail(userDetails.getUsername());
-//        if (user == null){
-//            return "login";
-//        }
-//        PaymentDto historyPayment = userService.getUserId(payment.getUserId());
-//        model.addAttribute("payment", historyPayment);
-//        return "usersHistoryPayment";
-//    }
 
     @PostMapping("/payment/save")
     private String depositSave(@Valid @ModelAttribute("payment") PaymentDto paymentDto,
@@ -145,14 +135,6 @@ public class AuthController {
             return "login";
         }
         try {
-//            List<Payment> payments = new ArrayList<Payment>();
-//            if (keyword == null) {
-//                paymentRepository.findByUserIdContainingIgnoreCase(keyword).forEach(payments::add);
-//            } else {
-//                paymentRepository.findByUserIdContainingIgnoreCase(keyword).forEach(payments::add);
-//                model.addAttribute("keyword", keyword);
-//            }
-//            model.addAttribute("payments", users);
             List<Payment> payment = paymentRepository.findByUserIdContainingIgnoreCase(Long.valueOf(paymentDto.getUserId()));
             model.addAttribute("payments", payment);
         } catch (Exception e) {
