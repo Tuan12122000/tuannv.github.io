@@ -1,5 +1,6 @@
 package com.example.registrationlogindemo.controller;
 
+import com.example.registrationlogindemo.dto.UserDto;
 import com.example.registrationlogindemo.entity.User;
 import com.example.registrationlogindemo.repository.UserRepository;
 import com.example.registrationlogindemo.service.UserService;
@@ -70,7 +71,7 @@ public class AdminController {
         if (existing != null) {
             result.rejectValue("email", null, "Email đã tồn tại");
         } else {
-            userRepository.save(user);
+            userService.saveUpdateUser(user);
             redirectAttributes.addFlashAttribute("message", "Thành Công");
             return "redirect:/users";
         }

@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface UserService {
     void saveUser(UserDto userDto);
-
+    void saveUpdateUser(User user);
     User findByEmail(String email);
 
     List<Payment> listAllPayment();
