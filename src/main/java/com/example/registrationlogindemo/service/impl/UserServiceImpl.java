@@ -53,6 +53,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void saveUpdateUser(User user) {
+        user.getName();
+        user.getMobile();
+        user.getEmail();
+        user.getType();
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        Role role = roleRepository.findByName("ROLE_USER");
+        if (role == null) {
+            role = checkRoleExist();
+        }
+        user.setRoles(Arrays.asList(role));
+        userRepository.save(user);
+    }
+
+
+    @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
