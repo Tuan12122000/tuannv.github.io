@@ -21,7 +21,7 @@ public class Payment implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private Long userId;
+    private String userId;
     private double amount;
     private String address;
     private String description;

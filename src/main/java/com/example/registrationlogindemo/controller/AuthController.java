@@ -71,7 +71,7 @@ public class AuthController {
         return "redirect:/register?success";
     }
 
-        @GetMapping("/payment")
+    @GetMapping("/payment")
     public String payment(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         User user = userService.findByEmail(userDetails.getUsername());
         if (user.getEmail().equals("admin@gmail.com")) {
@@ -115,11 +115,49 @@ public class AuthController {
             return "login";
         }
         try {
+            List<User> users = new ArrayList<User>();
+            if (keyword == null) {
+                userRepository.findByEmailContainingIgnoreCase(keyword).forEach(users::add);
+            } else {
+                userRepository.search(keyword).forEach(users::add);
+                model.addAttribute("keyword", keyword);
+            }
             List<PaymentDto> paymentList = userService.getListPayments();
             model.addAttribute("payments", paymentList);
         } catch (Exception e) {
             model.addAttribute("message", e.getMessage());
         }
         return "historyPayment";
+    }
+    @GetMapping("/user/payments/list")
+    public String ListUserPayment(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        User user = userService.findByEmail(userDetails.getUsername());
+        if (user == null) {
+            return "login";
+        }
+        return "userHistoryPayment";
+    }
+    //lịch sử giao dịch của User
+    @PostMapping("/user/payments/list/search")
+    private String getListUserPayments(@Valid @ModelAttribute("payment") PaymentDto paymentDto, @AuthenticationPrincipal UserDetails userDetails, Model model) {
+        User user = userService.findByEmail(userDetails.getUsername());
+        if (user == null) {
+            return "login";
+        }
+        try {
+//            List<Payment> payments = new ArrayList<Payment>();
+//            if (keyword == null) {
+//                paymentRepository.findByUserIdContainingIgnoreCase(keyword).forEach(payments::add);
+//            } else {
+//                paymentRepository.findByUserIdContainingIgnoreCase(keyword).forEach(payments::add);
+//                model.addAttribute("keyword", keyword);
+//            }
+//            model.addAttribute("payments", users);
+            List<Payment> payment = paymentRepository.findByUserIdContainingIgnoreCase(Long.valueOf(paymentDto.getUserId()));
+            model.addAttribute("payments", payment);
+        } catch (Exception e) {
+            model.addAttribute("message", e.getMessage());
+        }
+        return "userHistoryPayment";
     }
 }
