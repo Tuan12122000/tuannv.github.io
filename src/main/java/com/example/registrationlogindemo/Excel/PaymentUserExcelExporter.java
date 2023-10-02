@@ -13,17 +13,15 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class PaymentExcelExporter {
+public class PaymentUserExcelExporter {
     private XSSFWorkbook workbook;
     private XSSFSheet sheet;
     private List<Payment> listPayments;
 
-    public PaymentExcelExporter(List<Payment> listPayments) {
+    public PaymentUserExcelExporter(List<Payment> listPayments) {
         this.listPayments = listPayments;
         workbook = new XSSFWorkbook();
     }

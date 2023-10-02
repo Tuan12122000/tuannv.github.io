@@ -34,6 +34,7 @@ public class SpringSecurity {
                                 .requestMatchers("/payment/**").hasAnyRole("ADMIN", "USER")
                                 .requestMatchers("/edit/user/save").hasRole("ADMIN")
                                 .requestMatchers("/user/payments/list/**").hasRole("USER")
+                                .requestMatchers("/user/payment/export/excel").hasRole("USER")
 
                 ).formLogin(
                         form -> form

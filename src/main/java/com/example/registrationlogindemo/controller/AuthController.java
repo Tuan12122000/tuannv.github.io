@@ -9,6 +9,7 @@ import com.example.registrationlogindemo.repository.UserRepository;
 import com.example.registrationlogindemo.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -89,7 +89,10 @@ public class AuthController {
                                BindingResult result, @AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.findByEmail(userDetails.getUsername());
         if (user == null) {
-            return "indexAdmin";
+            return "login";
+        }
+        if (user != null) {
+            paymentDto.setUserId(String.valueOf(user.getId()));
         }
         if (paymentDto.getAmount() < 0) {
             result.rejectValue("amount", null, "Số tiền không hợp lệ");
@@ -105,28 +108,23 @@ public class AuthController {
             return "login";
         }
         try {
-            List<User> users = new ArrayList<User>();
-            if (keyword == null) {
-                userRepository.findByEmailContainingIgnoreCase(keyword).forEach(users::add);
-            } else {
-                userRepository.search(keyword).forEach(users::add);
-                model.addAttribute("keyword", keyword);
-            }
-            List<PaymentDto> paymentList = userService.getListPayments();
+            Page<Payment> paymentList = userService.getPayments();
             model.addAttribute("payments", paymentList);
         } catch (Exception e) {
             model.addAttribute("message", e.getMessage());
         }
         return "historyPayment";
     }
+
     @GetMapping("/user/payments/list")
-    public String ListUserPayment(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+    public String ListUserPayment(@AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.findByEmail(userDetails.getUsername());
         if (user == null) {
             return "login";
         }
         return "userHistoryPayment";
     }
+
     //lịch sử giao dịch của User
     @PostMapping("/user/payments/list/search")
     private String getListUserPayments(@Valid @ModelAttribute("payment") PaymentDto paymentDto, @AuthenticationPrincipal UserDetails userDetails, Model model) {
@@ -135,7 +133,7 @@ public class AuthController {
             return "login";
         }
         try {
-            List<Payment> payment = paymentRepository.findByUserIdContainingIgnoreCase(Long.valueOf(paymentDto.getUserId()));
+           List<Payment> payment = userService.findByUserIdListAllPayment(String.valueOf(user.getId()));
             model.addAttribute("payments", payment);
         } catch (Exception e) {
             model.addAttribute("message", e.getMessage());

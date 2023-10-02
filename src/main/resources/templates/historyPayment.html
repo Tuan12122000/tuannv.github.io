@@ -41,7 +41,6 @@
             </div>
         </div>
     </form>
-    <!-- Button Thêm mới -->
     <div class="row">
         <div class="col-md-12">
             <a th:href="@{/payments/export/excel}" class="btn btn-primary float-right btn-sm">Xuất file Excel</a>
@@ -56,10 +55,10 @@
                     <th scope="col">Họ Tên</th>
                     <th scope="col">Địa Chỉ</th>
                     <th scope="col">Mã Khách Hàng</th>
+                    <th scope="col">Mã Đơn Hàng</th>
                     <th scope="col">Số Tiền</th>
                     <th scope="col">Thời Gian Tạo</th>
                     <th scope="col">Nội Dung</th>
-                    <th scope="col">Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -68,6 +67,7 @@
                     <td>[[${payment.name}]]</td>
                     <td>[[${payment.address}]]</td>
                     <td>[[${payment.userId}]]</td>
+                    <td>[[${payment.oderId}]]</td>
                     <td>[[${payment.amount}]]</td>
                     <td>[[${payment.timeCreated}]]</td>
                     <td>[[${payment.description}]]</td>
