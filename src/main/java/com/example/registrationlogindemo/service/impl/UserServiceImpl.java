@@ -11,16 +11,14 @@ import com.example.registrationlogindemo.repository.RoleRepository;
 import com.example.registrationlogindemo.repository.UserRepository;
 import com.example.registrationlogindemo.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 
 @Service
@@ -39,7 +37,6 @@ public class UserServiceImpl implements UserService {
         user.setName(userDto.getName());
         user.setMobile(userDto.getMobileUer());
         user.setEmail(userDto.getEmail());
-        user.setType(1);
 
         //encrypt the password once we integrate spring security
         //user.setPassword(userDto.getPassword());
@@ -67,7 +64,6 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-
     @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
@@ -81,41 +77,49 @@ public class UserServiceImpl implements UserService {
     }
 
     //Dùng cho hàm PaymentUser
-
     @Override
-    public List<PaymentDto> getListPayments() {
-        return paymentRepository.findAll().stream()
-                .map(this::convertPaymentToDto)
-                .collect(Collectors.toList());
+    public List<Payment> getListPayments() {
+        return paymentRepository.findAll();
+    }
+    @Override
+    public Page<Payment> getPayments() {
+        return paymentRepository.findAll(PageRequest.of(0,10));
     }
 
-    private PaymentDto convertPaymentToDto(Payment payment) {
-        PaymentDto paymentDto = new PaymentDto();
-        paymentDto.setId(payment.getId());
-        paymentDto.setName(payment.getName());
-        paymentDto.setUserId(String.valueOf(payment.getUserId()));
-        paymentDto.setAmount(payment.getAmount());
-        paymentDto.setAddress(payment.getAddress());
-        paymentDto.setDescription(payment.getDescription());
-        paymentDto.setTimeCreated(Instant.ofEpochMilli(payment.getTimeCreated()).atZone(ZoneId.of("GMT+7")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        return paymentDto;
+//    private PaymentDto convertPaymentToDto(Payment payment) {
+//        PaymentDto paymentDto = new PaymentDto();
+//        paymentDto.setId(payment.getId());
+//        paymentDto.setName(payment.getName());
+//        paymentDto.setUserId(String.valueOf(payment.getUserId()));
+//        paymentDto.setOderId(payment.getOderId());
+//        paymentDto.setAmount(payment.getAmount());
+//        paymentDto.setAddress(payment.getAddress());
+//        paymentDto.setDescription(payment.getDescription());
+//        paymentDto.setTimeCreated(Instant.ofEpochMilli(Long.parseLong(payment.getTimeCreated())).atZone(ZoneId.of("GMT+7")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+//        return paymentDto;
+//    }
+
+    public List<Payment> findByUserIdListAllPayment(String userId) {
+        return paymentRepository.findByUserId(userId);
     }
 
     @Override
     public void savePayment(PaymentDto paymentDto) {
-        Instant instant = Instant.now();
-        long timeStampMillis = instant.toEpochMilli();
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String strDate = formatter.format(date);
         Payment payment = new Payment();
         payment.setName(paymentDto.getName());
         payment.setUserId(String.valueOf(paymentDto.getUserId()));
+        payment.setOderId(paymentDto.getOderId());
         payment.setAmount(paymentDto.getAmount());
-        payment.setTimeCreated(timeStampMillis);
+        payment.setTimeCreated(strDate);
         payment.setAddress(paymentDto.getAddress());
         payment.setDescription(Constant.DESCRIPTION);
         paymentRepository.save(payment);
     }
 
-    //Xuất Excel
+    //Xuất Excel All
     public List<Payment> listAllPayment() {
         return paymentRepository.findAll(Sort.by("userId").ascending());
     }

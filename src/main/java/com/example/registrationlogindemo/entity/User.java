@@ -31,7 +31,7 @@ public class User {
     @Column(nullable = false)
     private int type;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)

@@ -25,6 +25,9 @@
     <div class="col-md-14">
         <a th:href="@{/login}" class="btn btn-primary float-right btn-sm">Thoát</a>
     </div>
+    <div class="col-md-11">
+        <a th:href="@{/payment}" class="btn btn-primary float-right btn-sm">Tạo Hoá Đơn Thanh Toán</a>
+    </div>
     <h1>Lịch Sử Giao Dịch</h1>
     <form method="post" role="form" th:action="@{/user/payments/list/search}" th:object="${payment}">
         <div class="row d-flex">
@@ -40,10 +43,12 @@
                 <label class="col-form-label">&nbsp;</label> <br>
                 <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Tìm</button>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <a th:href="@{/payment}" class="btn btn-primary float-right btn-sm">Tạo Hoá Đơn Thanh Toán</a>
+            <div class="row">
+                <div class="col-md-12">
+                    <a th:href="@{/user/payment/export/excel}" class="btn btn-primary float-right btn-sm">
+                        Xuất file Excel
+                    </a>
+                </div>
             </div>
         </div>
     </form>
@@ -56,23 +61,22 @@
                     <th scope="col">Họ Tên</th>
                     <th scope="col">Địa Chỉ</th>
                     <th scope="col">Mã Khách Hàng</th>
+                    <th scope="col">Mã Đơn Hàng</th>
                     <th scope="col">Số Tiền</th>
                     <th scope="col">Thời Gian Tạo</th>
                     <th scope="col">Nội Dung</th>
                 </tr>
                 </thead>
                 <tbody>
-                <!--                <tr th:if="${payment.payments}">-->
-                <!--                    <td colspan="2"> Không Có Giao Dịch Nào </td>-->
-                <!--                </tr>-->
                 <tr th:each="payment : ${payments}">
-                    <td><span th:text="${payment.id}"> Id </span></td>
-                    <td><span th:text="${payment.name}"> Họ Tên </span></td>
-                    <td><span th:text="${payment.address}"> Địa Chỉ </span></td>
-                    <td><span th:text="${payment.userId}"> Mã Khách Hàng </span></td>
-                    <td><span th:text="${payment.amount}"> Số Tiền </span></td>
-                    <td><span th:text="${payment.timeCreated}"> Thời Gian Tạo </span></td>
-                    <td><span th:text="${payment.description}"> Nội Dung </span></td>
+                    <th scope="row">[[${payment.id}]]</th>
+                    <td>[[${payment.name}]]</td>
+                    <td>[[${payment.address}]]</td>
+                    <td>[[${payment.userId}]]</td>
+                    <td>[[${payment.oderId}]]</td>
+                    <td>[[${payment.amount}]]</td>
+                    <td>[[${payment.timeCreated}]]</td>
+                    <td>[[${payment.description}]]</td>
                 </tr>
                 </tbody>
             </table>

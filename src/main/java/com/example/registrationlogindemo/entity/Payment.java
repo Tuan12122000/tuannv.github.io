@@ -13,7 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="payments")
+@Table(name="payment")
 public class Payment implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -22,8 +22,9 @@ public class Payment implements Serializable {
     private Long id;
     private String name;
     private String userId;
+    private String oderId;
     private double amount;
     private String address;
     private String description;
-    private Long timeCreated;
+    private String timeCreated;
 }
