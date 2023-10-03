@@ -34,8 +34,8 @@
             <div class="col-md-4">
                 <label class="col-form-label">Tìm Kiếm Theo Mã Khách Hàng</label>
                 <input class="form-control"
-                       id="userId"
-                       name="userId"
+                       id="oderId"
+                       name="oderId"
                        type="text"
                 />
             </div>
@@ -43,15 +43,15 @@
                 <label class="col-form-label">&nbsp;</label> <br>
                 <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Tìm</button>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <a th:href="@{/user/payment/export/excel}" class="btn btn-primary float-right btn-sm">
-                        Xuất file Excel
-                    </a>
-                </div>
-            </div>
         </div>
     </form>
+    <div class="row">
+        <div class="col-md-12">
+            <a th:href="@{/user/payment/export/excel}" class="btn btn-primary float-right btn-sm">
+                Xuất file Excel
+            </a>
+        </div>
+    </div>
     <div class="row mt-4">
         <div class="col-md-12">
             <table class="table table-borderd">

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -117,24 +118,32 @@ public class AuthController {
     }
 
     @GetMapping("/user/payments/list")
-    public String ListUserPayment(@AuthenticationPrincipal UserDetails userDetails) {
+    public String ListUserPayment(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         User user = userService.findByEmail(userDetails.getUsername());
         if (user == null) {
             return "login";
         }
+        List<Payment> payment = userService.findByUserIdListAllPayment(String.valueOf(user.getId()));
+        model.addAttribute("payments", payment);
         return "userHistoryPayment";
     }
 
     //lịch sử giao dịch của User
-    @PostMapping("/user/payments/list/search")
-    private String getListUserPayments(@Valid @ModelAttribute("payment") PaymentDto paymentDto, @AuthenticationPrincipal UserDetails userDetails, Model model) {
+    @GetMapping("/user/payments/list/search")
+    private String getListUserPayments(@Valid @ModelAttribute("payment") PaymentDto paymentDto, @AuthenticationPrincipal UserDetails userDetails, Model model, String keyword) {
         User user = userService.findByEmail(userDetails.getUsername());
         if (user == null) {
             return "login";
         }
         try {
-           List<Payment> payment = userService.findByUserIdListAllPayment(String.valueOf(user.getId()));
-            model.addAttribute("payments", payment);
+            List<Payment> payment = paymentRepository.findByUserId(String.valueOf(user.getId()));
+            if (keyword == null) {
+                paymentRepository.search(keyword).forEach(payment::add);
+            } else {
+                paymentRepository.findByOderIdContainingIgnoreCase(keyword).forEach(payment::add);
+                model.addAttribute("keyword", keyword);
+            }
+            model.addAttribute("payment", payment);
         } catch (Exception e) {
             model.addAttribute("message", e.getMessage());
         }
