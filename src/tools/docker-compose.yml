@@ -1,0 +1,47 @@
+version: '3.2'
+services:
+  db:
+    image: mysql:8.0
+    cap_add:
+      - SYS_NICE
+    restart: always
+    container_name: database
+    ports:
+      - 3306:3306
+    volumes:
+      - type: volume
+        source: mysql-logs
+        target: /var/lib/mysql
+        volume:
+          nocopy: true
+    environment:
+      - MYSQL_ROOT_PASSWORD=yY6eE#99Hds0
+      - MYSQL_PASSWORD=Hh783lK
+      - MYSQL_USER=payment
+      - MYSQL_DATABASE=payment
+
+  api:
+    container_name: thanhtoantest
+    image: thanhtoantest:latest
+    privileged: true
+    pid: host
+    depends_on:
+      - db
+    ports:
+      - 8080:8080
+    links:
+      - db
+    volumes:
+      - type: volume
+        source: thanhtoan-logs
+        target: /var/log/supervisor
+        volume:
+          nocopy: true
+      - type: bind
+        source: /data/thanhtoan
+        target: /data/thanhtoan
+    tty: true
+    restart: on-failure
+volumes:
+  thanhtoan-logs:
+  mysql-logs:

@@ -32,6 +32,11 @@ public class AuthController {
     private final PaymentRepository paymentRepository;
 
 
+    @GetMapping("/")
+    public String loginSlash() {
+        return "login";
+    }
+
     @GetMapping("/login")
     public String loginForm() {
         return "login";
