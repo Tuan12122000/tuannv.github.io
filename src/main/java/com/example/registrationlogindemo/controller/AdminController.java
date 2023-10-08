@@ -1,6 +1,5 @@
 package com.example.registrationlogindemo.controller;
 
-import com.example.registrationlogindemo.dto.UserDto;
 import com.example.registrationlogindemo.entity.User;
 import com.example.registrationlogindemo.repository.UserRepository;
 import com.example.registrationlogindemo.service.UserService;
@@ -66,16 +65,10 @@ public class AdminController {
     }
 
     @PostMapping("/edit/user/save")
-    public String saveUpdateUser(User user, RedirectAttributes redirectAttributes, BindingResult result) {
-        User existing = userService.findByEmail(user.getEmail());
-        if (existing != null) {
-            result.rejectValue("email", null, "Email đã tồn tại");
-        } else {
-            userService.saveUpdateUser(user);
-            redirectAttributes.addFlashAttribute("message", "Thành Công");
-            return "redirect:/users";
-        }
-        return "editUser";
+    public String saveUpdateUser(User user, RedirectAttributes redirectAttributes) {
+        userService.saveUpdateUser(user);
+        redirectAttributes.addFlashAttribute("message", "Thành Công");
+        return "redirect:/users";
     }
 
     @GetMapping("/users/delete/{id}")
