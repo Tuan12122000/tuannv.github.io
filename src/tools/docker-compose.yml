@@ -4,10 +4,10 @@ services:
     image: mysql:8.0
     cap_add:
       - SYS_NICE
-    restart: always
+    restart: on-failure
     container_name: database
-    ports:
-      - 3306:3306
+    #ports:
+    #  - 3306:3306
     volumes:
       - type: volume
         source: mysql-logs
@@ -19,16 +19,24 @@ services:
       - MYSQL_PASSWORD=Hh783lK
       - MYSQL_USER=payment
       - MYSQL_DATABASE=payment
+    deploy:
+      resources:
+        limits:
+          #cpus: '0.01'
+          memory: 250M
+        reservations:
+          #cpus: '0.001'
+          memory: 400M
 
   api:
-    container_name: thanhtoantest
-    image: thanhtoantest:latest
+    container_name: thanhtoan
+    image: thanhtoan:latest
     privileged: true
     pid: host
     depends_on:
       - db
     ports:
-      - 8080:8080
+      - 80:8080
     links:
       - db
     volumes:
@@ -42,6 +50,14 @@ services:
         target: /data/thanhtoan
     tty: true
     restart: on-failure
+    deploy:
+      resources:
+        limits:
+          #cpus: '0.01'
+          memory: 250M
+        reservations:
+          #cpus: '0.001'
+          memory: 400M
 volumes:
   thanhtoan-logs:
   mysql-logs:
