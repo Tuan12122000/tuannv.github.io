@@ -114,7 +114,7 @@ public class UserServiceImpl implements UserService {
         payment.setOderId(paymentDto.getOderId());
         payment.setAmount(paymentDto.getAmount());
         payment.setTimeCreated(strDate);
-        payment.setAddress(paymentDto.getAddress());
+        payment.setAddress(Constant.Mobile);
         payment.setDescription(Constant.DESCRIPTION);
         paymentRepository.save(payment);
     }

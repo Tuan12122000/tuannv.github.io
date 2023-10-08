@@ -29,13 +29,13 @@
         <a th:href="@{/payment}" class="btn btn-primary float-right btn-sm">Tạo Hoá Đơn Thanh Toán</a>
     </div>
     <h1>Lịch Sử Giao Dịch</h1>
-    <form method="post" role="form" th:action="@{/user/payments/list/search}" th:object="${payment}">
+    <form th:action="@{/user/payments/list}">
         <div class="row d-flex">
             <div class="col-md-4">
-                <label class="col-form-label">Tìm Kiếm Theo Mã Khách Hàng</label>
+                <label class="col-form-label">Tìm Kiếm Theo Mã Đơn Hàng</label>
                 <input class="form-control"
                        id="oderId"
-                       name="oderId"
+                       name="kew"
                        type="text"
                 />
             </div>

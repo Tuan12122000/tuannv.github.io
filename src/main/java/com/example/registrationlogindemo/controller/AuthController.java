@@ -145,7 +145,7 @@ public class AuthController {
             if (keyword == null) {
                 paymentRepository.search(keyword).forEach(payment::add);
             } else {
-                paymentRepository.findByOderIdContainingIgnoreCase(keyword).forEach(payment::add);
+                paymentRepository.findByOderId(keyword).forEach(payment::add);
                 model.addAttribute("keyword", keyword);
             }
             model.addAttribute("payment", payment);
