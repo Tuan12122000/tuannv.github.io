@@ -1,5 +1,6 @@
 package com.example.registrationlogindemo.controller;
 
+import com.example.registrationlogindemo.Constant;
 import com.example.registrationlogindemo.dto.PaymentDto;
 import com.example.registrationlogindemo.dto.UserDto;
 import com.example.registrationlogindemo.entity.Payment;
@@ -9,16 +10,21 @@ import com.example.registrationlogindemo.repository.UserRepository;
 import com.example.registrationlogindemo.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,7 +98,7 @@ public class AuthController {
 
     @PostMapping("/payment/save")
     private String depositSave(@Valid @ModelAttribute("payment") PaymentDto paymentDto,
-                               BindingResult result, @AuthenticationPrincipal UserDetails userDetails) {
+                               BindingResult result, @AuthenticationPrincipal UserDetails userDetails,Model model) {
         User user = userService.findByEmail(userDetails.getUsername());
         if (user == null) {
             return "login";
@@ -104,7 +110,25 @@ public class AuthController {
             result.rejectValue("amount", null, "Số tiền không hợp lệ");
         }
         userService.savePayment(paymentDto);
-        return "redirect:/payment?success";
+        //Tạo ra Url để call sang OmiPay
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("Accept", "application/json");
+        //
+        MultiValueMap<String, String> mapParams = new LinkedMultiValueMap<String, String>();
+        mapParams.add("merchant_site_code", Constant.MERCHANT_SITE_CODE);
+        mapParams.add("return_url", Constant.URL_SEND_OMIPAY);
+        mapParams.add("receiver", user.getEmail());
+        mapParams.add("order_code", paymentDto.getOderId());
+        mapParams.add("price", String.valueOf(paymentDto.getAmount()));
+        mapParams.add("currency", Constant.Curren);
+        mapParams.add("secure_code", Constant.SECURE_CODE);
+        //
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        UriComponentsBuilder builderUri = UriComponentsBuilder.fromHttpUrl(Constant.URL_SEND_OMIPAY)
+                .queryParams(mapParams);
+
+        return "redirect:"+ builderUri.toUriString();
     }
 
     @GetMapping("/payments/list")
