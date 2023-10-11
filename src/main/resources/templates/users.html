@@ -73,7 +73,8 @@
                             <i class="fas fa-edit"></i>
                         </a>
                         <!-- Button Xóa -->
-                        <a th:href="@{'/users/delete/' + ${user.id}}" id="btnDelete" class="btn btn-danger">
+                        <a th:if="${user.type == 0}"
+                           th:href="@{'/users/delete/' + ${user.id}}" id="btnDelete" class="btn btn-danger">
                             <i class="fas fa-trash-alt"></i>
                         </a>
                     </td>
