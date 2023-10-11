@@ -122,7 +122,7 @@ public class AuthController {
         //
         MultiValueMap<String, String> mapParams = new LinkedMultiValueMap<String, String>();
         mapParams.add("merchant_site_code", Constant.MERCHANT_SITE_CODE);
-        mapParams.add("return_url", Constant.URL_SEND_OMIPAY);
+        mapParams.add("return_url", Constant.RETURN_URL_OMIPAY);
 //        mapParams.add("receiver", user.getEmail());
         mapParams.add("receiver", Constant.EmailDemo);
         mapParams.add("order_code", paymentDto.getOderId());
