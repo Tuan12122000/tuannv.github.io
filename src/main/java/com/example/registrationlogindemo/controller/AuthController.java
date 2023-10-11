@@ -8,11 +8,8 @@ import com.example.registrationlogindemo.entity.User;
 import com.example.registrationlogindemo.repository.PaymentRepository;
 import com.example.registrationlogindemo.repository.UserRepository;
 import com.example.registrationlogindemo.service.UserService;
-import com.twmacinta.util.MD5;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.codec.digest.Md5Crypt;
-import org.apache.tomcat.util.security.MD5Encoder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpEntity;
@@ -30,8 +27,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -113,20 +110,23 @@ public class AuthController {
         }
         if (paymentDto.getAmount() < 0) {
             result.rejectValue("amount", null, "Số tiền không hợp lệ");
+        }if (paymentDto.getOderId() != null) {
+            result.rejectValue("oderId", null, "Mã đơn hàng bị trùng lặp");
         }
         userService.savePayment(paymentDto);
         //Tạo ra Url để call sang OmiPay
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Accept", "application/json");
+
         //
-        MultiValueMap<String, String> mapParams = new LinkedMultiValueMap<String, String>();
+        MultiValueMap<String, String> mapParams = new LinkedMultiValueMap<>();
         mapParams.add("merchant_site_code", Constant.MERCHANT_SITE_CODE);
         mapParams.add("return_url", Constant.RETURN_URL_OMIPAY);
 //        mapParams.add("receiver", user.getEmail());
         mapParams.add("receiver", Constant.EmailDemo);
         mapParams.add("order_code", paymentDto.getOderId());
-        mapParams.add("price", String.valueOf(paymentDto.getAmount()));
+        mapParams.add("price", String.format(String.valueOf(paymentDto.getAmount())));
         mapParams.add("currency", Constant.Curren);
         mapParams.add("secure_pass", Constant.SECURE_PASS);
         String secure_code = Constant.getMD5(Constant.MERCHANT_SITE_CODE + '|' + Constant.EmailDemo + '|' + paymentDto.getAmount() + '|' + Constant.Curren + '|' + paymentDto.getOderId() + '|' + Constant.SECURE_PASS);
