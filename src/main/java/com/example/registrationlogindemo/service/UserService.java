@@ -11,14 +11,19 @@ import java.util.List;
 public interface UserService {
     //User
     void saveUser(UserDto userDto);
+
     void saveUpdateUser(User user);
+
     User findByEmail(String email);
 
 
     //Payment
     List<Payment> listAllPayment();
+
     List<Payment> getListPayments();
+
     Page<Payment> getPayments();
+
     List<Payment> findByUserIdListAllPayment(String userId);
 
     void savePayment(PaymentDto paymentDto);
