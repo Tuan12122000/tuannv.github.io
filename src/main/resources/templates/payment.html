@@ -13135,7 +13135,7 @@
             </div>
         </div>
         <div th:if="${param.success}">
-            <div style="width: 300px; margin-left: auto; margin-right: auto;" class="alert alert-info">Tạo Hóa Đơn Thành Công</div>
+            <div style="width: 300px; margin-left: auto; margin-right: auto;" class="alert alert-info">Thanh Toán Thành Công</div>
         </div>
         <div class="header-column justify-content-end">
             <div class="form-group mb-3">
@@ -13181,7 +13181,8 @@
                                                name="oderId"
                                                placeholder="Mã Đơn Hàng"
                                                required type="text">
-                                        <label class="customize-label">Mã Đơn Hàng</label>
+                                        <label class="customize-label">Mã Đơn Hàng<b
+                                                class="color-red">*</b></label>
                                     </div>
                                     <div class="form-floating mb-4 ">
                                         <input autofocus class="form-control"
@@ -13190,14 +13191,14 @@
                                                placeholder="Nhập Địa Chỉ"
                                                required type="text">
                                         <label class="customize-label">Địa chỉ <b
-                                                class="color-red"></b></label>
+                                                class="color-red">*</b></label>
                                     </div>
                                     <div class="form-floating mb-4">
                                         <input autofocus class="form-control"
                                                id="amount"
                                                name="amount"
                                                placeholder="Nhập Số Tiền"
-                                               required type="number"min="1000">
+                                               required type="text" min="1000">
                                         <label class="customize-label">Số Tiền<b
                                                 class="color-red">*</b></label>
                                     </div>
@@ -13207,15 +13208,13 @@
                                                name="description"
                                                placeholder="Nội Dung:"
                                                required type="Nội Dung:">
-                                        <label class="customize-label">Nội Dung:</label>
+                                        <label class="customize-label">Nội Dung:<b
+                                                class="color-red">*</b></label>
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="form-floating">
-                                        <!-- <button class="btn btn-primary btn-customize" form="form-ssc"-->
-                                        <!--   type="submit">Tiếp tục-->
-                                        <!--  </button>-->
                                         <button class="btn btn-primary btn-customize" type="submit">Thanh Toán</button>
                                     </div>
                                 </div>
@@ -13241,5 +13240,23 @@
         </div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<script type="text/javascript">
+    var format = function (num) {
+        num = num.replace(/[^0-9]/g, '');    var str = num.toString().replace("$", ""), parts = false, output = [], i = 1, formatted = null;
+        if (str.indexOf(".") > 0) {        parts = str.split(".");
+            str = parts[0];    }
+        str = str.split("").reverse();    for (var j = 0, len = str.length; j < len; j++) {
+            if (str[j] != ",") {            output.push(str[j]);
+                if (i % 3 == 0 && j < (len - 1)) {                output.push(".");
+                }            i++;
+            }    }
+        formatted = output.reverse().join("");    return (formatted + ((parts) ? "." + parts[1].substr(0, 2) : ""));
+    };
+
+    $('input[name="amount"]').keyup(function (e) {
+        $(this).val(format($(this).val()));
+    });
+</script>
 </body>
 </html>
