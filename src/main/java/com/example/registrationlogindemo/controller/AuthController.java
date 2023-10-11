@@ -8,12 +8,16 @@ import com.example.registrationlogindemo.entity.User;
 import com.example.registrationlogindemo.repository.PaymentRepository;
 import com.example.registrationlogindemo.repository.UserRepository;
 import com.example.registrationlogindemo.service.UserService;
+import com.twmacinta.util.MD5;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.json.JSONObject;
+import org.apache.commons.codec.digest.Md5Crypt;
+import org.apache.tomcat.util.security.MD5Encoder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -26,7 +30,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.ArrayList;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @Controller
@@ -98,7 +103,7 @@ public class AuthController {
 
     @PostMapping("/payment/save")
     private String depositSave(@Valid @ModelAttribute("payment") PaymentDto paymentDto,
-                               BindingResult result, @AuthenticationPrincipal UserDetails userDetails,Model model) {
+                               BindingResult result, @AuthenticationPrincipal UserDetails userDetails,Model model) throws NoSuchAlgorithmException {
         User user = userService.findByEmail(userDetails.getUsername());
         if (user == null) {
             return "login";
@@ -118,11 +123,15 @@ public class AuthController {
         MultiValueMap<String, String> mapParams = new LinkedMultiValueMap<String, String>();
         mapParams.add("merchant_site_code", Constant.MERCHANT_SITE_CODE);
         mapParams.add("return_url", Constant.URL_SEND_OMIPAY);
-        mapParams.add("receiver", user.getEmail());
+//        mapParams.add("receiver", user.getEmail());
+        mapParams.add("receiver", Constant.EmailDemo);
         mapParams.add("order_code", paymentDto.getOderId());
         mapParams.add("price", String.valueOf(paymentDto.getAmount()));
         mapParams.add("currency", Constant.Curren);
-        mapParams.add("secure_code", Constant.SECURE_CODE);
+        mapParams.add("secure_pass", Constant.SECURE_PASS);
+        String secure_code = Constant.getMD5(Constant.MERCHANT_SITE_CODE + '|' + Constant.EmailDemo + '|' + paymentDto.getAmount() + '|' + Constant.Curren + '|' + paymentDto.getOderId() + '|' + Constant.SECURE_PASS);
+        mapParams.add("secure_code", secure_code);
+        mapParams.add("installment", String.valueOf(0));
         //
         HttpEntity<String> entity = new HttpEntity<>(headers);
         UriComponentsBuilder builderUri = UriComponentsBuilder.fromHttpUrl(Constant.URL_SEND_OMIPAY)
