@@ -115,10 +115,11 @@ public class UserServiceImpl implements UserService {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String strDate = formatter.format(date);
         Payment payment = new Payment();
+        double amount = Double.parseDouble(paymentDto.getAmount().replace(".",""));
         payment.setName(paymentDto.getName());
         payment.setUserId(String.valueOf(paymentDto.getUserId()));
         payment.setOderId(paymentDto.getOderId());
-        payment.setAmount(paymentDto.getAmount());
+        payment.setAmount(amount);
         payment.setTimeCreated(strDate);
         payment.setAddress(Constant.Mobile);
         payment.setDescription(Constant.DESCRIPTION);

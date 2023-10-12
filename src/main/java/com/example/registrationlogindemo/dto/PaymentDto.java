@@ -14,7 +14,7 @@ public class PaymentDto {
     private String name;
     private String userId;        //Là tên của đơn vị
     private String oderId;
-    private double amount;
+    private String amount;
     private String address;
     private String description;
     private String timeCreated;

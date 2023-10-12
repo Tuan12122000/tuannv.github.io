@@ -13141,7 +13141,7 @@
         <div class="header-column justify-content-end">
             <div class="form-group mb-3">
                 <button class="btn btn-primary">
-                    <a class="navbar-brand" th:href="@{/login}">Thoát</a>
+                    <a class="navbar-brand" th:href="@{/logout}">Thoát</a>
                 </button>
             </div>
         </div>
@@ -13165,7 +13165,8 @@
                                                id="name"
                                                name="name"
                                                placeholder="Nhập Họ Tên Nguời Mua Hàng"
-                                               required type="text">
+                                               required type="text"
+                                               th:field="*{name}">
                                         <label class="customize-label">Họ Tên Người Mua Hàng <b
                                                 class="color-red">*</b></label>
                                     </div>
@@ -13174,7 +13175,12 @@
                                                id="oderId"
                                                name="oderId"
                                                placeholder="Mã Đơn Hàng"
-                                               required type="text">
+                                               required type="text"
+                                               th:field="*{oderId}"
+                                        >
+                                        <p th:errors="*{oderId}" class="text-danger"
+                                           th:if="${#fields.hasErrors('oderId')}">
+                                        </p>
                                         <label class="customize-label">Mã Đơn Hàng<b
                                                 class="color-red">*</b></label>
                                     </div>
@@ -13183,7 +13189,8 @@
                                                id="address"
                                                name="address"
                                                placeholder="Nhập Địa Chỉ"
-                                               required type="text">
+                                               required type="text"
+                                               th:field="*{address}">
                                         <label class="customize-label">Địa chỉ <b
                                                 class="color-red">*</b></label>
                                     </div>
@@ -13192,9 +13199,12 @@
                                                id="amount"
                                                name="amount"
                                                placeholder="Nhập Số Tiền"
-                                               required type="text" min="1000">
+                                               required type="text">
                                         <label class="customize-label">Số Tiền<b
                                                 class="color-red">*</b></label>
+                                        <p th:errors="*{amount}" class="text-danger"
+                                           th:if="${#fields.hasErrors('amount')}">
+                                        </p>
                                     </div>
                                     <div class="form-floating mb-4">
                                         <input autofocus class="form-control"
