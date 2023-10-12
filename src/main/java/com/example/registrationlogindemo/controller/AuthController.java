@@ -109,10 +109,6 @@ public class AuthController {
         } else {
             paymentDto.setUserId(String.valueOf(user.getId()));
         }
-        List<Payment> payment = paymentRepository.findByOderId(paymentDto.getOderId());
-        if (!payment.isEmpty()) {
-            result.rejectValue("oderId", null, "Mã đơn hàng bị trùng lặp");
-        }
         String amount = paymentDto.getAmount().replace(".","");
         if (paymentDto.getAmount() == null){
             result.rejectValue("amount", null, "Số không hợp lệ");
@@ -123,7 +119,6 @@ public class AuthController {
             model.addAttribute("payment", paymentDto);
             return "payment";
         }
-        userService.savePayment(paymentDto);
         //Tạo ra Url để call sang OmiPay
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -134,18 +129,18 @@ public class AuthController {
         mapParams.add("cancel_url", Constant.RETURN_URL_OMIPAY);
 //        mapParams.add("receiver", user.getEmail());
         mapParams.add("receiver", Constant.EmailDemo);
-        mapParams.add("order_code", paymentDto.getOderId());
+        mapParams.add("order_code", String.valueOf(Constant.Mobile));
         mapParams.add("price", amount);
         mapParams.add("currency", Constant.Curren);
         mapParams.add("secure_pass", Constant.SECURE_PASS);
-        String secure_code = Constant.getMD5(Constant.MERCHANT_SITE_CODE + '|' + Constant.EmailDemo + '|' + amount + '|' + Constant.Curren + '|' + paymentDto.getOderId() + '|' + Constant.SECURE_PASS);
+        String secure_code = Constant.getMD5(Constant.MERCHANT_SITE_CODE + '|' + Constant.EmailDemo + '|' + amount + '|' + Constant.Curren + '|' + Constant.Mobile + '|' + Constant.SECURE_PASS);
         mapParams.add("secure_code", secure_code);
         mapParams.add("installment", String.valueOf(0));
         //
         HttpEntity<String> entity = new HttpEntity<>(headers);
         UriComponentsBuilder builderUri = UriComponentsBuilder.fromHttpUrl(Constant.URL_SEND_OMIPAY)
                 .queryParams(mapParams);
-
+        userService.savePayment(paymentDto);
         return "redirect:" + builderUri.toUriString();
     }
 
@@ -183,11 +178,11 @@ public class AuthController {
             return "login";
         }
         try {
-            List<Payment> payment = paymentRepository.findByOderId(paymentDto.getOderId());
+            List<Payment> payment = paymentRepository.findByUserId(paymentDto.getUserId());
             if (keyword == null) {
                 paymentRepository.search(keyword).forEach(payment::add);
             } else {
-                paymentRepository.findByOderId(keyword).forEach(payment::add);
+                paymentRepository.findByUserId(keyword).forEach(payment::add);
                 model.addAttribute("keyword", keyword);
             }
             model.addAttribute("payment", payment);

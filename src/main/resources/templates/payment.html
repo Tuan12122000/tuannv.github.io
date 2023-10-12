@@ -13170,18 +13170,14 @@
                                         <label class="customize-label">Họ Tên Người Mua Hàng <b
                                                 class="color-red">*</b></label>
                                     </div>
-                                    <div class="form-floating mb-4">
+                                    <div class="form-floating mb-4 ">
                                         <input autofocus class="form-control"
-                                               id="oderId"
-                                               name="oderId"
-                                               placeholder="Mã Đơn Hàng"
+                                               id="mobile"
+                                               name="mobile"
+                                               placeholder="Nhập Địa Chỉ"
                                                required type="text"
-                                               th:field="*{oderId}"
-                                        >
-                                        <p th:errors="*{oderId}" class="text-danger"
-                                           th:if="${#fields.hasErrors('oderId')}">
-                                        </p>
-                                        <label class="customize-label">Mã Đơn Hàng<b
+                                               th:field="*{mobile}">
+                                        <label class="customize-label">Số điện thoại <b
                                                 class="color-red">*</b></label>
                                     </div>
                                     <div class="form-floating mb-4 ">
@@ -13205,15 +13201,6 @@
                                         <p th:errors="*{amount}" class="text-danger"
                                            th:if="${#fields.hasErrors('amount')}">
                                         </p>
-                                    </div>
-                                    <div class="form-floating mb-4">
-                                        <input autofocus class="form-control"
-                                               id="description"
-                                               name="description"
-                                               placeholder="Nội Dung:"
-                                               required type="Nội Dung:">
-                                        <label class="customize-label">Nội Dung:<b
-                                                class="color-red">*</b></label>
                                     </div>
                                 </div>
 

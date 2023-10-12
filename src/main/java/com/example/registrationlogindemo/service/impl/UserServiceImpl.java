@@ -18,7 +18,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 
 @Service
@@ -87,9 +89,10 @@ public class UserServiceImpl implements UserService {
     public List<Payment> getListPayments() {
         return paymentRepository.findAll();
     }
+
     @Override
     public Page<Payment> getPayments() {
-        return paymentRepository.findAll(PageRequest.of(0,10));
+        return paymentRepository.findAll(PageRequest.of(0, 10));
     }
 
 //    private PaymentDto convertPaymentToDto(Payment payment) {
@@ -115,13 +118,13 @@ public class UserServiceImpl implements UserService {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String strDate = formatter.format(date);
         Payment payment = new Payment();
-        double amount = Double.parseDouble(paymentDto.getAmount().replace(".",""));
+        double amount = Double.parseDouble(paymentDto.getAmount().replace(".", ""));
         payment.setName(paymentDto.getName());
         payment.setUserId(String.valueOf(paymentDto.getUserId()));
-        payment.setOderId(paymentDto.getOderId());
+        payment.setMobile(Constant.Mobile);
         payment.setAmount(amount);
         payment.setTimeCreated(strDate);
-        payment.setAddress(Constant.Mobile);
+        payment.setAddress(paymentDto.getAddress());
         payment.setDescription(Constant.DESCRIPTION);
         paymentRepository.save(payment);
     }
