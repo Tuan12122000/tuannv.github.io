@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -88,11 +87,14 @@ public class AuthController {
     @GetMapping("/payment")
     public String payment(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         User user = userService.findByEmail(userDetails.getUsername());
-        if (user.getEmail().equals("admin@gmail.com")) {
+        if (user == null) {
+            return "login";
+        }else if (user.getEmail().equals("admin@gmail.com")) {
             List<User> users = userRepository.findAll();
             model.addAttribute("users", users);
             return "users";
         }
+        model.addAttribute("payment", new PaymentDto());
         model.addAttribute("user", user);
         return "payment";
     }
@@ -100,44 +102,46 @@ public class AuthController {
 
     @PostMapping("/payment/save")
     private String depositSave(@Valid @ModelAttribute("payment") PaymentDto paymentDto,
-                               BindingResult result, @AuthenticationPrincipal UserDetails userDetails,Model model) throws NoSuchAlgorithmException {
+                               BindingResult result, @AuthenticationPrincipal UserDetails userDetails, Model model) throws NoSuchAlgorithmException {
         User user = userService.findByEmail(userDetails.getUsername());
         if (user == null) {
             return "login";
-        }
-        if (user != null) {
+        } else {
             paymentDto.setUserId(String.valueOf(user.getId()));
         }
-        if (paymentDto.getAmount() < 0) {
-            result.rejectValue("amount", null, "Số tiền không hợp lệ");
-        }if (paymentDto.getOderId() != null) {
-            result.rejectValue("oderId", null, "Mã đơn hàng bị trùng lặp");
+        String amount = paymentDto.getAmount().replace(".","");
+        if (paymentDto.getAmount() == null){
+            result.rejectValue("amount", null, "Số không hợp lệ");
+        }else if (Double.parseDouble(amount) < 0){
+            result.rejectValue("amount", null, "Số tiền phải lớn hơn 0");
         }
-        userService.savePayment(paymentDto);
+        if (result.hasErrors()) {
+            model.addAttribute("payment", paymentDto);
+            return "payment";
+        }
         //Tạo ra Url để call sang OmiPay
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Accept", "application/json");
-
-        //
         MultiValueMap<String, String> mapParams = new LinkedMultiValueMap<>();
         mapParams.add("merchant_site_code", Constant.MERCHANT_SITE_CODE);
         mapParams.add("return_url", Constant.RETURN_URL_OMIPAY);
+        mapParams.add("cancel_url", Constant.RETURN_URL_OMIPAY);
 //        mapParams.add("receiver", user.getEmail());
         mapParams.add("receiver", Constant.EmailDemo);
-        mapParams.add("order_code", paymentDto.getOderId());
-        mapParams.add("price", String.format(String.valueOf(paymentDto.getAmount())));
+        mapParams.add("order_code", String.valueOf(Constant.Mobile));
+        mapParams.add("price", amount);
         mapParams.add("currency", Constant.Curren);
         mapParams.add("secure_pass", Constant.SECURE_PASS);
-        String secure_code = Constant.getMD5(Constant.MERCHANT_SITE_CODE + '|' + Constant.EmailDemo + '|' + paymentDto.getAmount() + '|' + Constant.Curren + '|' + paymentDto.getOderId() + '|' + Constant.SECURE_PASS);
+        String secure_code = Constant.getMD5(Constant.MERCHANT_SITE_CODE + '|' + Constant.EmailDemo + '|' + amount + '|' + Constant.Curren + '|' + Constant.Mobile + '|' + Constant.SECURE_PASS);
         mapParams.add("secure_code", secure_code);
         mapParams.add("installment", String.valueOf(0));
         //
         HttpEntity<String> entity = new HttpEntity<>(headers);
         UriComponentsBuilder builderUri = UriComponentsBuilder.fromHttpUrl(Constant.URL_SEND_OMIPAY)
                 .queryParams(mapParams);
-
-        return "redirect:"+ builderUri.toUriString();
+        userService.savePayment(paymentDto);
+        return "redirect:" + builderUri.toUriString();
     }
 
     @GetMapping("/payments/list")
@@ -174,11 +178,11 @@ public class AuthController {
             return "login";
         }
         try {
-            List<Payment> payment = paymentRepository.findByUserId(String.valueOf(user.getId()));
+            List<Payment> payment = paymentRepository.findByUserId(paymentDto.getUserId());
             if (keyword == null) {
                 paymentRepository.search(keyword).forEach(payment::add);
             } else {
-                paymentRepository.findByOderId(keyword).forEach(payment::add);
+                paymentRepository.findByUserId(keyword).forEach(payment::add);
                 model.addAttribute("keyword", keyword);
             }
             model.addAttribute("payment", payment);
