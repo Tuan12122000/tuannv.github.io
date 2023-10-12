@@ -124,8 +124,26 @@ public class UserServiceImpl implements UserService {
         payment.setMobile(Constant.Mobile);
         payment.setAmount(amount);
         payment.setTimeCreated(strDate);
+        payment.setOrderCode(paymentDto.getOrderCode());
         payment.setAddress(paymentDto.getAddress());
+        payment.setStatus(0);
         payment.setDescription(Constant.DESCRIPTION);
+        paymentRepository.save(payment);
+    }
+    @Override
+    public void updatePayment(Payment payment) {
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String strDate = formatter.format(date);
+        payment.getName();
+        payment.getUserId();
+        payment.getMobile();
+        payment.getAmount();
+        payment.getTimeCreated();
+        payment.getOrderCode();
+        payment.getAddress();
+        payment.getStatus();
+        payment.getDescription();
         paymentRepository.save(payment);
     }
 

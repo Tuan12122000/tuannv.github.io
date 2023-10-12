@@ -15,6 +15,7 @@ public class PaymentDto {
     private String userId;        //Là tên của đơn vị
     private String mobile;
     private String amount;
+    private String orderCode;
     private String address;
     private String timeCreated;
 }
