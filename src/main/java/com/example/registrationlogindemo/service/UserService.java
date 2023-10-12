@@ -1,5 +1,6 @@
 package com.example.registrationlogindemo.service;
 
+import com.example.registrationlogindemo.dto.OmipayCallBackDto;
 import com.example.registrationlogindemo.dto.PaymentDto;
 import com.example.registrationlogindemo.dto.UserDto;
 import com.example.registrationlogindemo.entity.Payment;
@@ -27,4 +28,5 @@ public interface UserService {
     List<Payment> findByUserIdListAllPayment(String userId);
 
     void savePayment(PaymentDto paymentDto);
+    void updatePayment(Payment payment);
 }

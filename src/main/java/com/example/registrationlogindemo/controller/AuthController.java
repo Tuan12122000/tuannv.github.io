@@ -1,6 +1,7 @@
 package com.example.registrationlogindemo.controller;
 
 import com.example.registrationlogindemo.Constant;
+import com.example.registrationlogindemo.dto.OmipayCallBackDto;
 import com.example.registrationlogindemo.dto.PaymentDto;
 import com.example.registrationlogindemo.dto.UserDto;
 import com.example.registrationlogindemo.entity.Payment;
@@ -22,9 +23,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.security.NoSuchAlgorithmException;
@@ -120,6 +119,9 @@ public class AuthController {
             return "payment";
         }
         //Tạo ra Url để call sang OmiPay
+        String orderCode = "PAY_" + System.currentTimeMillis();
+        paymentDto.setOrderCode(orderCode);
+        userService.savePayment(paymentDto);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Accept", "application/json");
@@ -129,19 +131,27 @@ public class AuthController {
         mapParams.add("cancel_url", Constant.RETURN_URL_OMIPAY);
 //        mapParams.add("receiver", user.getEmail());
         mapParams.add("receiver", Constant.EmailDemo);
-        mapParams.add("order_code", String.valueOf(Constant.Mobile));
+        mapParams.add("order_code", orderCode);
         mapParams.add("price", amount);
         mapParams.add("currency", Constant.Curren);
         mapParams.add("secure_pass", Constant.SECURE_PASS);
-        String secure_code = Constant.getMD5(Constant.MERCHANT_SITE_CODE + '|' + Constant.EmailDemo + '|' + amount + '|' + Constant.Curren + '|' + Constant.Mobile + '|' + Constant.SECURE_PASS);
+        String secure_code = Constant.getMD5(Constant.MERCHANT_SITE_CODE + '|' + Constant.EmailDemo + '|' + amount + '|' + Constant.Curren + '|' + orderCode + '|' + Constant.SECURE_PASS);
         mapParams.add("secure_code", secure_code);
         mapParams.add("installment", String.valueOf(0));
         //
         HttpEntity<String> entity = new HttpEntity<>(headers);
         UriComponentsBuilder builderUri = UriComponentsBuilder.fromHttpUrl(Constant.URL_SEND_OMIPAY)
                 .queryParams(mapParams);
-        userService.savePayment(paymentDto);
         return "redirect:" + builderUri.toUriString();
+    }
+    @GetMapping(path = "/omiPayCallBack")
+    public String OmiPayCallBack(@RequestParam OmipayCallBackDto omipayCallBackDto, Model model, Payment payment) {
+        if (omipayCallBackDto != null && omipayCallBackDto.getOrder_code() != null){
+            Payment oderCodePayment = paymentRepository.findByOrderCode(payment.getOrderCode());
+            oderCodePayment.setStatus(1);
+            userService.updatePayment(oderCodePayment);
+        }
+        return "payment";
     }
 
     @GetMapping("/payments/list")

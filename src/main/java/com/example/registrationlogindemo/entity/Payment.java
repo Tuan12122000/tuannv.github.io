@@ -23,8 +23,10 @@ public class Payment implements Serializable {
     private String name;
     private String userId;
     private String mobile;
+    private String orderCode;
     private double amount;
     private String address;
     private String description;
     private String timeCreated;
+    private int status;
 }
