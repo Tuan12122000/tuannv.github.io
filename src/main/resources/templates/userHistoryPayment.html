@@ -29,13 +29,14 @@
         <a th:href="@{/payment}" class="btn btn-primary float-right btn-sm">Tạo Hoá Đơn Thanh Toán</a>
     </div>
     <h1>Lịch Sử Giao Dịch</h1>
-    <form th:action="@{/user/payments/list}">
+    <form th:action="@{/user/payments/list/search}">
         <div class="row d-flex">
             <div class="col-md-4">
                 <label class="col-form-label">Tìm Kiếm Theo Mã Đơn Hàng</label>
                 <input class="form-control"
                        name="keyword"
                        type="text"
+                       th:value="${keyword}"
                 />
             </div>
             <div class="col-md-2">
@@ -56,26 +57,28 @@
             <table class="table table-borderd">
                 <thead>
                 <tr>
-                    <th scope="col">Id</th>
+                    <th scope="col">STT</th>
                     <th scope="col">Họ Tên</th>
                     <th scope="col">Địa Chỉ</th>
-                    <th scope="col">Mã Khách Hàng</th>
+                    <th scope="col">Số Điện Thoại</th>
                     <th scope="col">Mã Đơn Hàng</th>
                     <th scope="col">Số Tiền</th>
                     <th scope="col">Thời Gian Tạo</th>
                     <th scope="col">Nội Dung</th>
+                    <th scope="col">Trạng Thái Đơn Hàng</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="payment : ${payments}">
-                    <th scope="row">[[${payment.id}]]</th>
+                    <td>[[${payment.stt}]]</td>
                     <td>[[${payment.name}]]</td>
                     <td>[[${payment.address}]]</td>
-                    <td>[[${payment.userId}]]</td>
                     <td>[[${payment.mobile}]]</td>
+                    <td>[[${payment.orderCode}]]</td>
                     <td>[[${payment.amount}]]</td>
                     <td>[[${payment.timeCreated}]]</td>
                     <td>[[${payment.description}]]</td>
+                    <td>[[${payment.status}]]</td>
                 </tr>
                 </tbody>
             </table>

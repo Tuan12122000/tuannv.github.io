@@ -1,5 +1,6 @@
 package com.example.registrationlogindemo.controller;
 
+import com.example.registrationlogindemo.dto.PaymentDto;
 import com.example.registrationlogindemo.entity.User;
 import com.example.registrationlogindemo.repository.UserRepository;
 import com.example.registrationlogindemo.service.UserService;
@@ -79,5 +80,19 @@ public class AdminController {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
         }
         return "redirect:/users";
+    }
+    @GetMapping("/payments/list")
+    public String getAll(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        User user = userService.findByEmail(userDetails.getUsername());
+        if (user == null) {
+            return "login";
+        }
+        try {
+            List<PaymentDto> paymentList = userService.getPayments();
+            model.addAttribute("payments", paymentList);
+        } catch (Exception e) {
+            model.addAttribute("message", e.getMessage());
+        }
+        return "historyPayment";
     }
 }

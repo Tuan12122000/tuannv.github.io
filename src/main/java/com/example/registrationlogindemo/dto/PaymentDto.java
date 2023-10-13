@@ -10,12 +10,15 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PaymentDto {
+    private int stt;
     private long id;
     private String name;
-    private String userId;        //Là tên của đơn vị
+    private Long userId;        //Là tên của đơn vị
     private String mobile;
-    private String amount;
     private String orderCode;
+    private String amount;
     private String address;
+    private String description;
     private String timeCreated;
+    private String status;
 }

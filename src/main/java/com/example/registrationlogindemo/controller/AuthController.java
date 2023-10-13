@@ -11,8 +11,6 @@ import com.example.registrationlogindemo.repository.UserRepository;
 import com.example.registrationlogindemo.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -23,7 +21,9 @@ import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.security.NoSuchAlgorithmException;
@@ -88,7 +88,7 @@ public class AuthController {
         User user = userService.findByEmail(userDetails.getUsername());
         if (user == null) {
             return "login";
-        }else if (user.getEmail().equals("admin@gmail.com")) {
+        } else if (user.getEmail().equals("admin@gmail.com")) {
             List<User> users = userRepository.findAll();
             model.addAttribute("users", users);
             return "users";
@@ -106,12 +106,12 @@ public class AuthController {
         if (user == null) {
             return "login";
         } else {
-            paymentDto.setUserId(String.valueOf(user.getId()));
+            paymentDto.setUserId(user.getId());
         }
-        String amount = paymentDto.getAmount().replace(".","");
-        if (paymentDto.getAmount() == null){
+        String amount = paymentDto.getAmount().replace(".", "");
+        if (paymentDto.getAmount() == null) {
             result.rejectValue("amount", null, "Số không hợp lệ");
-        }else if (Double.parseDouble(amount) < 0){
+        } else if (Double.parseDouble(amount) < 0) {
             result.rejectValue("amount", null, "Số tiền phải lớn hơn 0");
         }
         if (result.hasErrors()) {
@@ -144,29 +144,16 @@ public class AuthController {
                 .queryParams(mapParams);
         return "redirect:" + builderUri.toUriString();
     }
-    @GetMapping(path = "/omiPayCallBack")
-    public String OmiPayCallBack(@RequestParam OmipayCallBackDto omipayCallBackDto, Model model, Payment payment) {
-        if (omipayCallBackDto != null && omipayCallBackDto.getOrder_code() != null){
-            Payment oderCodePayment = paymentRepository.findByOrderCode(payment.getOrderCode());
-            oderCodePayment.setStatus(1);
-            userService.updatePayment(oderCodePayment);
-        }
-        return "payment";
-    }
 
-    @GetMapping("/payments/list")
-    private String getAll(@Param("keyword") String keyword, @AuthenticationPrincipal UserDetails userDetails, Model model) {
-        User user = userService.findByEmail(userDetails.getUsername());
-        if (user == null) {
-            return "login";
+    ///fix omipayCallBackDto.getOrder_code() == null
+    @GetMapping(path = "/omiPayCallBack")
+    public String OmiPayCallBack(OmipayCallBackDto omipayCallBackDto) {
+        if (omipayCallBackDto.getOrder_code() != null) {
+            userService.updatePaymentByOrderCode(omipayCallBackDto.getOrder_code(), 1);
+        } else {
+            userService.updatePaymentByOrderCode(omipayCallBackDto.getOrder_code(),2);
         }
-        try {
-            Page<Payment> paymentList = userService.getPayments();
-            model.addAttribute("payments", paymentList);
-        } catch (Exception e) {
-            model.addAttribute("message", e.getMessage());
-        }
-        return "historyPayment";
+        return "redirect:/user/payments/list";
     }
 
     @GetMapping("/user/payments/list")
@@ -175,27 +162,25 @@ public class AuthController {
         if (user == null) {
             return "login";
         }
-        List<Payment> payment = userService.findByUserIdListAllPayment(String.valueOf(user.getId()));
+        List<PaymentDto> payment = userService.findByUserIdListAllPayment(user.getId());
         model.addAttribute("payments", payment);
         return "userHistoryPayment";
     }
 
     //lịch sử giao dịch của User
     @GetMapping("/user/payments/list/search")
-    private String getListUserPayments(@Valid @ModelAttribute("payment") PaymentDto paymentDto, @AuthenticationPrincipal UserDetails userDetails, Model model, String keyword) {
+    private String getListUserPayments(@AuthenticationPrincipal UserDetails userDetails, Model model, String keyword) {
         User user = userService.findByEmail(userDetails.getUsername());
         if (user == null) {
             return "login";
         }
         try {
-            List<Payment> payment = paymentRepository.findByUserId(paymentDto.getUserId());
-            if (keyword == null) {
-                paymentRepository.search(keyword).forEach(payment::add);
-            } else {
-                paymentRepository.findByUserId(keyword).forEach(payment::add);
+            List<PaymentDto> payment = userService.findByUserIdListAllPayment(user.getId());
+            if (keyword != null) {
+                payment = userService.searchPaymentByOrderCode(user.getId(), "%" + keyword + "%");
                 model.addAttribute("keyword", keyword);
             }
-            model.addAttribute("payment", payment);
+            model.addAttribute("payments", payment);
         } catch (Exception e) {
             model.addAttribute("message", e.getMessage());
         }

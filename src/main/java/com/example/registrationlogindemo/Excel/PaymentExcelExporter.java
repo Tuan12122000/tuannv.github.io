@@ -21,9 +21,9 @@ import java.util.List;
 public class PaymentExcelExporter {
     private XSSFWorkbook workbook;
     private XSSFSheet sheet;
-    private List<Payment> listPayments;
+    private List<PaymentDto> listPayments;
 
-    public PaymentExcelExporter(List<Payment> listPayments) {
+    public PaymentExcelExporter(List<PaymentDto> listPayments) {
         this.listPayments = listPayments;
         workbook = new XSSFWorkbook();
     }
@@ -47,6 +47,7 @@ public class PaymentExcelExporter {
         createCell(row, 4, "Địa Chỉ", style);
         createCell(row, 5, "Nội Dung", style);
         createCell(row, 6, "Thời Gian Tạo Giao Dịch", style);
+        createCell(row, 7, "Trạng Thái Giao Dịch", style);
 
     }
 
@@ -76,17 +77,18 @@ public class PaymentExcelExporter {
         font.setFontHeight(14);
         style.setFont(font);
 
-        for (Payment payment : listPayments) {
+        for (PaymentDto payment : listPayments) {
             Row row = sheet.createRow(rowCount++);
             int columnCount = 0;
 
-            createCell(row, columnCount++, payment.getId(), style);
+            createCell(row, columnCount++, payment.getStt(), style);
             createCell(row, columnCount++, payment.getName(), style);
             createCell(row, columnCount++, payment.getUserId(), style);
             createCell(row, columnCount++, payment.getAmount(), style);
             createCell(row, columnCount++, payment.getAddress(), style);
             createCell(row, columnCount++, payment.getDescription(), style);
             createCell(row, columnCount++, payment.getTimeCreated(), style);
+            createCell(row, columnCount++, payment.getStatus(), style);
         }
     }
 

@@ -15,8 +15,9 @@ import java.util.List;
 
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
-    List<Payment> findByUserId(String userId);
-    Payment findByOrderCode (String userId);
-    @Query("select u from Payment u where u.userId = ?1")
-    List<Payment> search(String oderId);
+    Payment findByStatus (int status);
+    List<Payment> findByUserIdOrderByIdDesc(Long userId);
+    Payment findByOrderCode (String orderCode);
+    @Query("select u from Payment u where u.userId = ?1 and u.orderCode like ?2")
+    List<Payment> searchPaymentByOrderCode(Long userId, String orderCode);
 }
