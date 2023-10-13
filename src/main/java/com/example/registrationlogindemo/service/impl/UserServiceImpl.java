@@ -11,8 +11,6 @@ import com.example.registrationlogindemo.repository.RoleRepository;
 import com.example.registrationlogindemo.repository.UserRepository;
 import com.example.registrationlogindemo.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +19,9 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -86,30 +87,77 @@ public class UserServiceImpl implements UserService {
 
     //Dùng cho hàm PaymentUser
     @Override
-    public List<Payment> getListPayments() {
-        return paymentRepository.findAll();
+    public List<PaymentDto> getListPayments() {
+        AtomicInteger idx = new AtomicInteger(1);
+        return paymentRepository.findAll().stream()
+                .map(e -> {
+                    PaymentDto paymentDto = this.convertPaymentToDto(e);
+                    paymentDto.setStt(idx.getAndIncrement());
+                    return paymentDto;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Page<Payment> getPayments() {
-        return paymentRepository.findAll(PageRequest.of(0, 10));
+    public List<PaymentDto> getPayments() {
+        AtomicInteger idx = new AtomicInteger(1);
+        return paymentRepository.findAll().stream()
+                .map(e -> {
+                    PaymentDto paymentDto = this.convertPaymentToDto(e);
+                    paymentDto.setStt(idx.getAndIncrement());
+                    return paymentDto;
+                })
+                .collect(Collectors.toList());
     }
 
-//    private PaymentDto convertPaymentToDto(Payment payment) {
-//        PaymentDto paymentDto = new PaymentDto();
-//        paymentDto.setId(payment.getId());
-//        paymentDto.setName(payment.getName());
-//        paymentDto.setUserId(String.valueOf(payment.getUserId()));
-//        paymentDto.setOderId(payment.getOderId());
-//        paymentDto.setAmount(payment.getAmount());
-//        paymentDto.setAddress(payment.getAddress());
-//        paymentDto.setDescription(payment.getDescription());
-//        paymentDto.setTimeCreated(Instant.ofEpochMilli(Long.parseLong(payment.getTimeCreated())).atZone(ZoneId.of("GMT+7")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-//        return paymentDto;
-//    }
+    private PaymentDto convertPaymentToDto(Payment payment) {
+        PaymentDto paymentDto = new PaymentDto();
+        paymentDto.setId(payment.getId());
+        paymentDto.setName(payment.getName());
+        paymentDto.setUserId(payment.getUserId());
+        paymentDto.setMobile(payment.getMobile());
+        paymentDto.setOrderCode(payment.getOrderCode());
+        paymentDto.setAmount(String.format(Locale.US, "%,.0f", payment.getAmount()));
+        paymentDto.setAddress(payment.getAddress());
+        paymentDto.setDescription(payment.getDescription());
+        paymentDto.setTimeCreated(payment.getTimeCreated());
+        paymentDto.setStatus(this.resolveStatus(payment.getStatus()));
+        return paymentDto;
+    }
 
-    public List<Payment> findByUserIdListAllPayment(String userId) {
-        return paymentRepository.findByUserId(userId);
+    private String resolveStatus(int status) {
+        switch (status) {
+            case 1:
+                return "Thành công";
+            case 2:
+                return "Thất bại";
+            default:
+                return "Đang thanh toán";
+        }
+    }
+
+    @Override
+    public List<PaymentDto> findByUserIdListAllPayment(Long userId) {
+        AtomicInteger idx = new AtomicInteger(1);
+        return paymentRepository.findByUserIdOrderByIdDesc(userId).stream()
+                .map(e -> {
+                    PaymentDto paymentDto = this.convertPaymentToDto(e);
+                    paymentDto.setStt(idx.getAndIncrement());
+                    return paymentDto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PaymentDto> searchPaymentByOrderCode(Long userId, String orderCode) {
+        AtomicInteger idx = new AtomicInteger(1);
+        return paymentRepository.searchPaymentByOrderCode(userId, orderCode).stream()
+                .map(e -> {
+                    PaymentDto paymentDto = this.convertPaymentToDto(e);
+                    paymentDto.setStt(idx.getAndIncrement());
+                    return paymentDto;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -120,7 +168,7 @@ public class UserServiceImpl implements UserService {
         Payment payment = new Payment();
         double amount = Double.parseDouble(paymentDto.getAmount().replace(".", ""));
         payment.setName(paymentDto.getName());
-        payment.setUserId(String.valueOf(paymentDto.getUserId()));
+        payment.setUserId(paymentDto.getUserId());
         payment.setMobile(Constant.Mobile);
         payment.setAmount(amount);
         payment.setTimeCreated(strDate);
@@ -130,22 +178,22 @@ public class UserServiceImpl implements UserService {
         payment.setDescription(Constant.DESCRIPTION);
         paymentRepository.save(payment);
     }
+
     @Override
-    public void updatePayment(Payment payment) {
-        Date date = new Date();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String strDate = formatter.format(date);
-        payment.getName();
-        payment.getUserId();
-        payment.getMobile();
-        payment.getAmount();
-        payment.getTimeCreated();
-        payment.getOrderCode();
-        payment.getAddress();
-        payment.getStatus();
-        payment.getDescription();
+    public PaymentDto updatePaymentByOrderCode(String orderCode, int status) {
+        Payment payment = paymentRepository.findByOrderCode(orderCode);
+        payment.setStatus(status);
         paymentRepository.save(payment);
+        return this.convertPaymentToDto(payment);
     }
+//    @Override
+//    public PaymentDto updatePaymentByOrderCodeError(String orderCode ,int status) {
+//        if (Payment payment = paymentRepository.findByOrderCode(orderCode) == null){
+//            payment.setStatus(status);
+//            paymentRepository.save(payment);
+//            return this.convertPaymentToDto(payment);
+//        }
+//    }
 
     //Xuất Excel All
     public List<Payment> listAllPayment() {
