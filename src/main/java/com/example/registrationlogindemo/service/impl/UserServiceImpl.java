@@ -11,6 +11,9 @@ import com.example.registrationlogindemo.repository.RoleRepository;
 import com.example.registrationlogindemo.repository.UserRepository;
 import com.example.registrationlogindemo.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -127,10 +130,10 @@ public class UserServiceImpl implements UserService {
 
     private String resolveStatus(int status) {
         switch (status) {
+            case 0:
+                return "Thất bại";
             case 1:
                 return "Thành công";
-            case 2:
-                return "Thất bại";
             default:
                 return "Đang thanh toán";
         }
@@ -186,17 +189,30 @@ public class UserServiceImpl implements UserService {
         paymentRepository.save(payment);
         return this.convertPaymentToDto(payment);
     }
-//    @Override
-//    public PaymentDto updatePaymentByOrderCodeError(String orderCode ,int status) {
-//        if (Payment payment = paymentRepository.findByOrderCode(orderCode) == null){
-//            payment.setStatus(status);
-//            paymentRepository.save(payment);
-//            return this.convertPaymentToDto(payment);
-//        }
-//    }
 
     //Xuất Excel All
     public List<Payment> listAllPayment() {
         return paymentRepository.findAll(Sort.by("userId").ascending());
+    }
+
+    //phân trang giao dịch của user
+    @Override
+    public Page<PaymentDto> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection, Long userId, String orderCode) {
+        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() :
+                Sort.by(sortField).descending();
+
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
+        return this.paymentRepository.findByUserIdAndOrderCodeLike(userId, orderCode, pageable)
+                .map(this::convertPaymentToDto);
+    }
+    //phân trang theo tất cả giao dịch
+    @Override
+    public Page<PaymentDto> findAllPaginated(int pageNo, int pageSize, String sortField, String sortDirection, String orderCode) {
+        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() :
+                Sort.by(sortField).descending();
+
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
+        return this.paymentRepository.findByOrderCodeLike(orderCode,pageable)
+                .map(this::convertPaymentToDto);
     }
 }

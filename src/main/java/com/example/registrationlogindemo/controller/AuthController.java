@@ -4,7 +4,6 @@ import com.example.registrationlogindemo.Constant;
 import com.example.registrationlogindemo.dto.OmipayCallBackDto;
 import com.example.registrationlogindemo.dto.PaymentDto;
 import com.example.registrationlogindemo.dto.UserDto;
-import com.example.registrationlogindemo.entity.Payment;
 import com.example.registrationlogindemo.entity.User;
 import com.example.registrationlogindemo.repository.PaymentRepository;
 import com.example.registrationlogindemo.repository.UserRepository;
@@ -88,7 +87,7 @@ public class AuthController {
         User user = userService.findByEmail(userDetails.getUsername());
         if (user == null) {
             return "login";
-        } else if (user.getEmail().equals("admin@gmail.com")) {
+        } else if (user.getEmail().equals(Constant.ADMIN)) {
             List<User> users = userRepository.findAll();
             model.addAttribute("users", users);
             return "users";
@@ -150,25 +149,23 @@ public class AuthController {
     public String OmiPayCallBack(OmipayCallBackDto omipayCallBackDto) {
         if (omipayCallBackDto.getOrder_code() != null) {
             userService.updatePaymentByOrderCode(omipayCallBackDto.getOrder_code(), 1);
-        } else {
-            userService.updatePaymentByOrderCode(omipayCallBackDto.getOrder_code(),2);
         }
         return "redirect:/user/payments/list";
     }
 
-    @GetMapping("/user/payments/list")
-    public String ListUserPayment(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-        User user = userService.findByEmail(userDetails.getUsername());
-        if (user == null) {
-            return "login";
-        }
-        List<PaymentDto> payment = userService.findByUserIdListAllPayment(user.getId());
-        model.addAttribute("payments", payment);
-        return "userHistoryPayment";
-    }
+//    @GetMapping("/user/payments/list")
+//    public String ListUserPayment(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+//        User user = userService.findByEmail(userDetails.getUsername());
+//        if (user == null) {
+//            return "login";
+//        }
+//        List<PaymentDto> payment = userService.findByUserIdListAllPayment(user.getId());
+//        model.addAttribute("payments", payment);
+//        return "userHistoryPayment";
+//    }
 
     //lịch sử giao dịch của User
-    @GetMapping("/user/payments/list/search")
+    /*@GetMapping("/user/payments/list/search")
     private String getListUserPayments(@AuthenticationPrincipal UserDetails userDetails, Model model, String keyword) {
         User user = userService.findByEmail(userDetails.getUsername());
         if (user == null) {
@@ -185,5 +182,5 @@ public class AuthController {
             model.addAttribute("message", e.getMessage());
         }
         return "userHistoryPayment";
-    }
+    }*/
 }

@@ -15,6 +15,7 @@ public class Constant {
     public static final String URL_SEND_OMIPAY = "https://checkout-sandbox.omipay.vn/v1/checkout.php";
 //    public static final String RETURN_URL_OMIPAY = "http://pay.vinhyeneus.io.vn/payment";
     public static final String RETURN_URL_OMIPAY = "http://localhost:8080/omiPayCallBack";
+    public static final String ADMIN = "admin@gmail.com";
 
 
     //Chuỗi format
