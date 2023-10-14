@@ -81,18 +81,18 @@ public class AdminController {
         }
         return "redirect:/users";
     }
-    @GetMapping("/payments/list")
-    public String getAll(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-        User user = userService.findByEmail(userDetails.getUsername());
-        if (user == null) {
-            return "login";
-        }
-        try {
-            List<PaymentDto> paymentList = userService.getPayments();
-            model.addAttribute("payments", paymentList);
-        } catch (Exception e) {
-            model.addAttribute("message", e.getMessage());
-        }
-        return "historyPayment";
-    }
+//    @GetMapping("/payments/list")
+//    public String getAll(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+//        User user = userService.findByEmail(userDetails.getUsername());
+//        if (user == null) {
+//            return "login";
+//        }
+//        try {
+//            List<PaymentDto> paymentList = userService.getPayments();
+//            model.addAttribute("payments", paymentList);
+//        } catch (Exception e) {
+//            model.addAttribute("message", e.getMessage());
+//        }
+//        return "historyPayment";
+//    }
 }

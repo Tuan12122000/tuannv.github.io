@@ -4,6 +4,7 @@ import com.example.registrationlogindemo.dto.PaymentDto;
 import com.example.registrationlogindemo.dto.UserDto;
 import com.example.registrationlogindemo.entity.Payment;
 import com.example.registrationlogindemo.entity.User;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -30,5 +31,7 @@ public interface UserService {
     void savePayment(PaymentDto paymentDto);
 
     PaymentDto updatePaymentByOrderCode(String orderCode, int status);
-//    PaymentDto updatePaymentByOrderCodeError(String orderCode ,int status);
+    //phân trang
+    Page<PaymentDto> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection, Long userId, String keyword);
+    Page<PaymentDto> findAllPaginated(int pageNo, int pageSize, String sortField, String sortDirection, String keyword);
 }

@@ -53,6 +53,7 @@
                 <tr>
                     <th scope="col">STT</th>
                     <th scope="col">Họ Tên</th>
+                    <th scope="col">Mã Khách Hàng</th>
                     <th scope="col">Địa Chỉ</th>
                     <th scope="col">Số Điện Thoại</th>
                     <th scope="col">Mã Đơn Hàng</th>
@@ -64,8 +65,9 @@
                 </thead>
                 <tbody>
                 <tr th:each="payment : ${payments}">
-                    <td>[[${payment.stt}]]</td>
+                    <td>[[${paymentStat.index + 1}]]</td>
                     <td>[[${payment.name}]]</td>
+                    <td>[[${payment.userId}]]</td>
                     <td>[[${payment.address}]]</td>
                     <td>[[${payment.mobile}]]</td>
                     <td>[[${payment.orderCode}]]</td>
@@ -76,6 +78,28 @@
                 </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+    <div th:if = "${totalPages > 0}">
+        <div class = "row col-sm-10">
+            <div class = "col-sm-2">
+                Total Rows: [[${totalItems}]]
+            </div>
+            <div class = "col-sm-2">
+					<span th:each="i: ${#numbers.sequence(1, totalPages)}">
+						<a th:if="${currentPage != i}" th:href="@{'/payment/list/all/user/page/' + ${i}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>
+						<span th:unless="${currentPage != i}">[[${i}]]</span>  &nbsp; &nbsp;
+					</span>
+            </div>
+            <div class = "col-sm-1">
+                <a th:if="${currentPage < totalPages}" th:href="@{'/payment/list/all/user/page/' + ${currentPage + 1}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Next</a>
+                <span th:unless="${currentPage < totalPages}">Next</span>
+            </div>
+
+            <div class="col-sm-1">
+                <a th:if="${currentPage < totalPages}" th:href="@{'/payment/list/all/user/page/' + ${totalPages}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Last</a>
+                <span th:unless="${currentPage < totalPages}">Last</span>
+            </div>
         </div>
     </div>
 </div>

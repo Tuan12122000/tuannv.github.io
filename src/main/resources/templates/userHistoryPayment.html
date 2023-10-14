@@ -15,13 +15,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
           integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
     <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
     <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
 </head>
 
 <body>
 <!-- Main content -->
-<div class="container">
+<div class="container my-2">
     <div class="col-md-14">
         <a th:href="@{/login}" class="btn btn-primary float-right btn-sm">Thoát</a>
     </div>
@@ -29,7 +33,7 @@
         <a th:href="@{/payment}" class="btn btn-primary float-right btn-sm">Tạo Hoá Đơn Thanh Toán</a>
     </div>
     <h1>Lịch Sử Giao Dịch</h1>
-    <form th:action="@{/user/payments/list/search}">
+    <form th:action="@{/user/payments/list}">
         <div class="row d-flex">
             <div class="col-md-4">
                 <label class="col-form-label">Tìm Kiếm Theo Mã Đơn Hàng</label>
@@ -70,7 +74,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="payment : ${payments}">
-                    <td>[[${payment.stt}]]</td>
+                    <td>[[${paymentStat.index + 1}]]</td>
                     <td>[[${payment.name}]]</td>
                     <td>[[${payment.address}]]</td>
                     <td>[[${payment.mobile}]]</td>
@@ -82,6 +86,28 @@
                 </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+    <div th:if = "${totalPages > 0}">
+        <div class = "row col-sm-10">
+            <div class = "col-sm-2">
+                Total Rows: [[${totalItems}]]
+            </div>
+            <div class = "col-sm-2">
+					<span th:each="i: ${#numbers.sequence(1, totalPages)}">
+						<a th:if="${currentPage != i}" th:href="@{'/user/payments/list/page/' + ${i}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>
+						<span th:unless="${currentPage != i}">[[${i}]]</span>  &nbsp; &nbsp;
+					</span>
+            </div>
+            <div class = "col-sm-1">
+                <a th:if="${currentPage < totalPages}" th:href="@{'/user/payments/list/page/' + ${currentPage + 1}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Next</a>
+                <span th:unless="${currentPage < totalPages}">Next</span>
+            </div>
+
+            <div class="col-sm-1">
+                <a th:if="${currentPage < totalPages}" th:href="@{'/user/payments/list/page/' + ${totalPages}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Last</a>
+                <span th:unless="${currentPage < totalPages}">Last</span>
+            </div>
         </div>
     </div>
 </div>
