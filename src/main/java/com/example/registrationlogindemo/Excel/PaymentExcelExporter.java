@@ -43,11 +43,12 @@ public class PaymentExcelExporter {
         createCell(row, 0, "STT", style);
         createCell(row, 1, "Họ Tên", style);
         createCell(row, 2, "Mã Khách Hàng", style);
-        createCell(row, 3, "Số Tiền", style);
-        createCell(row, 4, "Địa Chỉ", style);
-        createCell(row, 5, "Nội Dung", style);
-        createCell(row, 6, "Thời Gian Tạo Giao Dịch", style);
-        createCell(row, 7, "Trạng Thái Giao Dịch", style);
+        createCell(row, 3, "Mã Hóa Đơn Hàng", style);
+        createCell(row, 4, "Số Tiền", style);
+        createCell(row, 5, "Địa Chỉ", style);
+        createCell(row, 6, "Nội Dung", style);
+        createCell(row, 7, "Thời Gian Tạo Giao Dịch", style);
+        createCell(row, 8, "Trạng Thái Giao Dịch", style);
 
     }
 
@@ -84,6 +85,7 @@ public class PaymentExcelExporter {
             createCell(row, columnCount++, payment.getStt(), style);
             createCell(row, columnCount++, payment.getName(), style);
             createCell(row, columnCount++, payment.getUserId(), style);
+            createCell(row, columnCount++, payment.getOrderCode(), style);
             createCell(row, columnCount++, payment.getAmount(), style);
             createCell(row, columnCount++, payment.getAddress(), style);
             createCell(row, columnCount++, payment.getDescription(), style);

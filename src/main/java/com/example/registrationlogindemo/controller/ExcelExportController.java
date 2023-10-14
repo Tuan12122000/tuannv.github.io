@@ -2,6 +2,7 @@ package com.example.registrationlogindemo.controller;
 
 
 import com.example.registrationlogindemo.Excel.PaymentExcelExporter;
+import com.example.registrationlogindemo.Excel.UserPaymentExcelExporter;
 import com.example.registrationlogindemo.dto.PaymentDto;
 import com.example.registrationlogindemo.entity.User;
 import com.example.registrationlogindemo.service.UserService;
@@ -54,7 +55,7 @@ public class ExcelExportController {
 
         List<PaymentDto> payment = service.findByUserIdListAllPayment(user.getId());
 
-        PaymentExcelExporter excelExporter = new PaymentExcelExporter(payment);
+        UserPaymentExcelExporter excelExporter = new UserPaymentExcelExporter(payment);
         excelExporter.export(response);
     }
 }
