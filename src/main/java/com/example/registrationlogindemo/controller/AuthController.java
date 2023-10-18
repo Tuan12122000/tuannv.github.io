@@ -8,8 +8,12 @@ import com.example.registrationlogindemo.entity.User;
 import com.example.registrationlogindemo.repository.PaymentRepository;
 import com.example.registrationlogindemo.repository.UserRepository;
 import com.example.registrationlogindemo.service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -31,6 +35,10 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class AuthController {
+
+    public static Logger logger = LogManager.getLogger(AuthController.class);
+
+    private final ObjectMapper objectMapper;
 
     private final UserService userService;
     private final UserRepository userRepository;
@@ -127,8 +135,8 @@ public class AuthController {
         MultiValueMap<String, String> mapParams = new LinkedMultiValueMap<>();
         mapParams.add("merchant_site_code", Constant.MERCHANT_SITE_CODE);
         mapParams.add("return_url", Constant.RETURN_URL_OMIPAY);
-        mapParams.add("cancel_url", Constant.RETURN_URL_OMIPAY);
-//        mapParams.add("receiver", user.getEmail());
+        mapParams.add("cancel_url", Constant.CANCEL_URL_OMIPAY);
+        mapParams.add("notify_url", Constant.RETURN_URL_OMIPAY);
         mapParams.add("receiver", Constant.EmailDemo);
         mapParams.add("order_code", orderCode);
         mapParams.add("price", amount);
@@ -146,41 +154,11 @@ public class AuthController {
 
     ///fix omipayCallBackDto.getOrder_code() == null
     @GetMapping(path = "/omiPayCallBack")
-    public String OmiPayCallBack(OmipayCallBackDto omipayCallBackDto) {
+    public String OmiPayCallBack(OmipayCallBackDto omipayCallBackDto) throws Exception {
+        logger.info("OmiPay_Call_Back: " + objectMapper.writeValueAsString(omipayCallBackDto));
         if (omipayCallBackDto.getOrder_code() != null) {
             userService.updatePaymentByOrderCode(omipayCallBackDto.getOrder_code(), 1);
         }
         return "redirect:/user/payments/list";
     }
-
-//    @GetMapping("/user/payments/list")
-//    public String ListUserPayment(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-//        User user = userService.findByEmail(userDetails.getUsername());
-//        if (user == null) {
-//            return "login";
-//        }
-//        List<PaymentDto> payment = userService.findByUserIdListAllPayment(user.getId());
-//        model.addAttribute("payments", payment);
-//        return "userHistoryPayment";
-//    }
-
-    //lịch sử giao dịch của User
-    /*@GetMapping("/user/payments/list/search")
-    private String getListUserPayments(@AuthenticationPrincipal UserDetails userDetails, Model model, String keyword) {
-        User user = userService.findByEmail(userDetails.getUsername());
-        if (user == null) {
-            return "login";
-        }
-        try {
-            List<PaymentDto> payment = userService.findByUserIdListAllPayment(user.getId());
-            if (keyword != null) {
-                payment = userService.searchPaymentByOrderCode(user.getId(), "%" + keyword + "%");
-                model.addAttribute("keyword", keyword);
-            }
-            model.addAttribute("payments", payment);
-        } catch (Exception e) {
-            model.addAttribute("message", e.getMessage());
-        }
-        return "userHistoryPayment";
-    }*/
 }
