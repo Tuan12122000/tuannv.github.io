@@ -185,7 +185,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public PaymentDto updatePaymentByOrderCode(String orderCode, int status) {
         Payment payment = paymentRepository.findByOrderCode(orderCode);
-        payment.setStatus(status);
+        payment.setStatus(1);
         paymentRepository.save(payment);
         return this.convertPaymentToDto(payment);
     }
