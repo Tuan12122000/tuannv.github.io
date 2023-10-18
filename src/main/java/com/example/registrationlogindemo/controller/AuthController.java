@@ -8,8 +8,12 @@ import com.example.registrationlogindemo.entity.User;
 import com.example.registrationlogindemo.repository.PaymentRepository;
 import com.example.registrationlogindemo.repository.UserRepository;
 import com.example.registrationlogindemo.service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -31,6 +35,10 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class AuthController {
+
+    public static Logger logger = LogManager.getLogger(AuthController.class);
+
+    private final ObjectMapper objectMapper;
 
     private final UserService userService;
     private final UserRepository userRepository;
@@ -128,7 +136,6 @@ public class AuthController {
         mapParams.add("merchant_site_code", Constant.MERCHANT_SITE_CODE);
         mapParams.add("return_url", Constant.RETURN_URL_OMIPAY);
         mapParams.add("cancel_url", Constant.RETURN_URL_OMIPAY);
-//        mapParams.add("receiver", user.getEmail());
         mapParams.add("receiver", Constant.EmailDemo);
         mapParams.add("order_code", orderCode);
         mapParams.add("price", amount);
@@ -146,7 +153,8 @@ public class AuthController {
 
     ///fix omipayCallBackDto.getOrder_code() == null
     @GetMapping(path = "/omiPayCallBack")
-    public String OmiPayCallBack(OmipayCallBackDto omipayCallBackDto) {
+    public String OmiPayCallBack(OmipayCallBackDto omipayCallBackDto) throws Exception {
+        logger.info("OmiPay_Call_Back: " + objectMapper.writeValueAsString(omipayCallBackDto));
         if (omipayCallBackDto.getOrder_code() != null) {
             userService.updatePaymentByOrderCode(omipayCallBackDto.getOrder_code(), 1);
         }

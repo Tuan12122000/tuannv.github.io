@@ -18,12 +18,12 @@ public class Constant {
     public static final String URL_SEND_OMIPAY = "https://checkout.omipay.vn/v1/checkout.php";
     public static final String RETURN_URL_OMIPAY = "http://pay.vinhyeneus.io.vn/omiPayCallBack";
 
-    /*//MC localhost
-    public static final String MERCHANT_SITE_CODE = "66457";
-    public static final String EmailDemo = "demo@omipay.vn";
-    public static final String SECURE_PASS = "1af52a56c761eb79160185b19395e105";
-    public static final String URL_SEND_OMIPAY = "https://checkout-sandbox.omipay.vn/v1/checkout.php";
-    public static final String RETURN_URL_OMIPAY = "http://localhost:8080/omiPayCallBack";*/
+    //MC localhost
+//    public static final String MERCHANT_SITE_CODE = "64916";
+//    public static final String EmailDemo = "loanhtt@htpgroup.com.vn";
+//    public static final String SECURE_PASS = "ba8e139da45551d05320363557728acd";
+//    public static final String URL_SEND_OMIPAY = "https://checkout-sandbox.omipay.vn/v1/checkout.php";
+//    public static final String RETURN_URL_OMIPAY = "http://localhost:8080/omiPayCallBack";
 
 
     //Chuỗi format
