@@ -130,12 +130,12 @@ public class UserServiceImpl implements UserService {
 
     private String resolveStatus(int status) {
         switch (status) {
-            case 0:
+            case 2:
                 return "Thất bại";
             case 1:
                 return "Thành công";
             default:
-                return "Đang thanh toán";
+                return "Chưa thanh toán";
         }
     }
 
@@ -185,7 +185,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public PaymentDto updatePaymentByOrderCode(String orderCode, int status) {
         Payment payment = paymentRepository.findByOrderCode(orderCode);
-        payment.setStatus(1);
+        payment.setStatus(status);
         paymentRepository.save(payment);
         return this.convertPaymentToDto(payment);
     }
