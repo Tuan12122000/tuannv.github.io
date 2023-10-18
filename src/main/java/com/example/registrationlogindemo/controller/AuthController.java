@@ -152,35 +152,4 @@ public class AuthController {
         }
         return "redirect:/user/payments/list";
     }
-
-    @GetMapping("/user/payments/list")
-    public String ListUserPayment(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-        User user = userService.findByEmail(userDetails.getUsername());
-        if (user == null) {
-            return "login";
-        }
-        List<PaymentDto> payment = userService.findByUserIdListAllPayment(user.getId());
-        model.addAttribute("payments", payment);
-        return "userHistoryPayment";
-    }
-
-    //lịch sử giao dịch của User
-    /*@GetMapping("/user/payments/list/search")
-    private String getListUserPayments(@AuthenticationPrincipal UserDetails userDetails, Model model, String keyword) {
-        User user = userService.findByEmail(userDetails.getUsername());
-        if (user == null) {
-            return "login";
-        }
-        try {
-            List<PaymentDto> payment = userService.findByUserIdListAllPayment(user.getId());
-            if (keyword != null) {
-                payment = userService.searchPaymentByOrderCode(user.getId(), "%" + keyword + "%");
-                model.addAttribute("keyword", keyword);
-            }
-            model.addAttribute("payments", payment);
-        } catch (Exception e) {
-            model.addAttribute("message", e.getMessage());
-        }
-        return "userHistoryPayment";
-    }*/
 }
