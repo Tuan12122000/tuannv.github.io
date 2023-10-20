@@ -188,6 +188,9 @@ public class UserServiceImpl implements UserService {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String strDate = formatter.format(date);
         Payment payment = paymentRepository.findByOrderCode(orderCode);
+        if (payment.getStatus() == 1) {
+            return null;
+        }
         payment.setTimeCreated(strDate);
         payment.setStatus(status);
         paymentRepository.save(payment);
@@ -209,6 +212,7 @@ public class UserServiceImpl implements UserService {
         return this.paymentRepository.findByUserIdAndOrderCodeLike(userId, orderCode, pageable)
                 .map(this::convertPaymentToDto);
     }
+
     //phân trang theo tất cả giao dịch
     @Override
     public Page<PaymentDto> findAllPaginated(int pageNo, int pageSize, String sortField, String sortDirection, String orderCode) {
@@ -216,7 +220,7 @@ public class UserServiceImpl implements UserService {
                 Sort.by(sortField).descending();
 
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
-        return this.paymentRepository.findByOrderCodeLike(orderCode,pageable)
+        return this.paymentRepository.findByOrderCodeLike(orderCode, pageable)
                 .map(this::convertPaymentToDto);
     }
 }

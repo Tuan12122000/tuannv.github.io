@@ -4,11 +4,11 @@ import com.example.registrationlogindemo.Constant;
 import com.example.registrationlogindemo.dto.OmipayCallBackDto;
 import com.example.registrationlogindemo.dto.PaymentDto;
 import com.example.registrationlogindemo.dto.UserDto;
+import com.example.registrationlogindemo.dto.CommonRequestOmiPay;
 import com.example.registrationlogindemo.entity.User;
 import com.example.registrationlogindemo.repository.PaymentRepository;
 import com.example.registrationlogindemo.repository.UserRepository;
 import com.example.registrationlogindemo.service.UserService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -154,11 +154,27 @@ public class AuthController {
 
     ///fix omipayCallBackDto.getOrder_code() == null
     @GetMapping(path = "/omiPayCallBack")
-    public String OmiPayCallBack(OmipayCallBackDto omipayCallBackDto) throws Exception {
+    public String omiPayCallBack(OmipayCallBackDto omipayCallBackDto) throws Exception {
         logger.info("OmiPay_Call_Back: " + objectMapper.writeValueAsString(omipayCallBackDto));
         if (omipayCallBackDto.getOrder_code() != null) {
             userService.updatePaymentByOrderCode(omipayCallBackDto.getOrder_code(), 1);
         }
         return "redirect:/user/payments/list";
+    }
+
+    @GetMapping(path = "/omiPayCallBack/requestCommon")
+    public CommonRequestOmiPay commonRequestOmiPay(OmipayCallBackDto omipayCallBackDto) throws Exception {
+        logger.info("OmiPay_Call_Back: " + objectMapper.writeValueAsString(omipayCallBackDto));
+        CommonRequestOmiPay commonRequestOmiPay = new CommonRequestOmiPay();
+        if (omipayCallBackDto.getOrder_code() != null) {
+            userService.updatePaymentByOrderCode(omipayCallBackDto.getOrder_code(), 1);
+            commonRequestOmiPay.setError_code("000");
+            commonRequestOmiPay.setMessage("Success");
+        } else {
+            commonRequestOmiPay.setError_code("2");
+            commonRequestOmiPay.setMessage("Lỗi Hoá Đơn");
+        }
+        logger.info("Thông Tin Giao Dịch" + commonRequestOmiPay.getMessage());
+        return commonRequestOmiPay;
     }
 }
