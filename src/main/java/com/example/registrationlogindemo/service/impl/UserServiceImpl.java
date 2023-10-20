@@ -184,7 +184,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PaymentDto updatePaymentByOrderCode(String orderCode, int status) {
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String strDate = formatter.format(date);
         Payment payment = paymentRepository.findByOrderCode(orderCode);
+        payment.setTimeCreated(strDate);
         payment.setStatus(status);
         paymentRepository.save(payment);
         return this.convertPaymentToDto(payment);
