@@ -1,6 +1,5 @@
 package com.example.registrationlogindemo.controller;
 
-import com.example.registrationlogindemo.dto.PaymentDto;
 import com.example.registrationlogindemo.entity.User;
 import com.example.registrationlogindemo.repository.UserRepository;
 import com.example.registrationlogindemo.service.UserService;

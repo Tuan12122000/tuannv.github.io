@@ -35,19 +35,19 @@ public class SpringSecurity {
                                 .requestMatchers("/edit/user/save").hasRole("ADMIN")
                                 .requestMatchers("/user/payments/list/**").hasAnyRole("ADMIN", "USER")
                                 .requestMatchers("/user/payment/export/excel").hasAnyRole("ADMIN", "USER")
-                                .requestMatchers("/omiPayCallBack/**").hasRole("USER")
+                                .requestMatchers("/omiPayCallBack/**").permitAll()
 
                 ).formLogin(
-                        form -> form
-                                .loginPage("/")
-                                .loginProcessingUrl("/login")
-                                .defaultSuccessUrl("/payment", true)
-                                .permitAll()
-                ).logout(
-                        logout -> logout
-                                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                                .permitAll()
-                );
+                form -> form
+                        .loginPage("/")
+                        .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/payment", true)
+                        .permitAll()
+        ).logout(
+                logout -> logout
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                        .permitAll()
+        );
         return http.build();
     }
 
