@@ -1,10 +1,10 @@
 package com.example.registrationlogindemo.controller;
 
 import com.example.registrationlogindemo.Constant;
+import com.example.registrationlogindemo.dto.CommonRequestOmiPay;
 import com.example.registrationlogindemo.dto.OmipayCallBackDto;
 import com.example.registrationlogindemo.dto.PaymentDto;
 import com.example.registrationlogindemo.dto.UserDto;
-import com.example.registrationlogindemo.dto.CommonRequestOmiPay;
 import com.example.registrationlogindemo.entity.User;
 import com.example.registrationlogindemo.repository.PaymentRepository;
 import com.example.registrationlogindemo.repository.UserRepository;
@@ -162,19 +162,19 @@ public class AuthController {
         return "redirect:/user/payments/list";
     }
 
-    @GetMapping(path = "/omiPayCallBack/requestCommon")
-    public CommonRequestOmiPay commonRequestOmiPay(OmipayCallBackDto omipayCallBackDto) throws Exception {
-        logger.info("OmiPay_Call_Back: " + objectMapper.writeValueAsString(omipayCallBackDto));
-        CommonRequestOmiPay commonRequestOmiPay = new CommonRequestOmiPay();
-        if (omipayCallBackDto.getOrder_code() != null) {
-            userService.updatePaymentByOrderCode(omipayCallBackDto.getOrder_code(), 1);
-            commonRequestOmiPay.setError_code("000");
-            commonRequestOmiPay.setMessage("Success");
-        } else {
-            commonRequestOmiPay.setError_code("2");
-            commonRequestOmiPay.setMessage("Lỗi Hoá Đơn");
-        }
-        logger.info("Thông Tin Giao Dịch" + commonRequestOmiPay.getMessage());
-        return commonRequestOmiPay;
-    }
+//    @GetMapping(path = "/omiPayCallBack/requestCommon")
+//    public CommonRequestOmiPay commonRequestOmiPay(OmipayCallBackDto omipayCallBackDto) throws Exception {
+//        logger.info("OmiPay_Call_Back: " + objectMapper.writeValueAsString(omipayCallBackDto));
+//        CommonRequestOmiPay commonRequestOmiPay = new CommonRequestOmiPay();
+//        if (omipayCallBackDto.getOrder_code() != null) {
+//            userService.updatePaymentByOrderCode(omipayCallBackDto.getOrder_code(), 1);
+//            commonRequestOmiPay.setError_code("000");
+//            commonRequestOmiPay.setMessage("Success");
+//        } else {
+//            commonRequestOmiPay.setError_code("2");
+//            commonRequestOmiPay.setMessage("Lỗi Hoá Đơn");
+//        }
+//        logger.info("Thông Tin Giao Dịch:" + commonRequestOmiPay.getMessage());
+//        return commonRequestOmiPay;
+//    }
 }
