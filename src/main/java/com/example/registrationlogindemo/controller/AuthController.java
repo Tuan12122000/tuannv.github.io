@@ -1,7 +1,6 @@
 package com.example.registrationlogindemo.controller;
 
 import com.example.registrationlogindemo.Constant;
-import com.example.registrationlogindemo.dto.CommonRequestOmiPay;
 import com.example.registrationlogindemo.dto.OmipayCallBackDto;
 import com.example.registrationlogindemo.dto.PaymentDto;
 import com.example.registrationlogindemo.dto.UserDto;
