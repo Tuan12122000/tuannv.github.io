@@ -90,21 +90,9 @@ public class UserServiceImpl implements UserService {
 
     //Dùng cho hàm PaymentUser
     @Override
-    public List<PaymentDto> getListPayments() {
+    public List<PaymentDto> getListPayments(int status) {
         AtomicInteger idx = new AtomicInteger(1);
-        return paymentRepository.findAll().stream()
-                .map(e -> {
-                    PaymentDto paymentDto = this.convertPaymentToDto(e);
-                    paymentDto.setStt(idx.getAndIncrement());
-                    return paymentDto;
-                })
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<PaymentDto> getPayments() {
-        AtomicInteger idx = new AtomicInteger(1);
-        return paymentRepository.findAll().stream()
+        return paymentRepository.findByStatus(status).stream()
                 .map(e -> {
                     PaymentDto paymentDto = this.convertPaymentToDto(e);
                     paymentDto.setStt(idx.getAndIncrement());
@@ -140,9 +128,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<PaymentDto> findByUserIdListAllPayment(Long userId) {
+    public List<PaymentDto> findByUserIdListAllPayment(Long userId, int status) {
         AtomicInteger idx = new AtomicInteger(1);
-        return paymentRepository.findByUserIdOrderByIdDesc(userId).stream()
+        return paymentRepository.findByUserIdAndStatus(userId, status).stream()
                 .map(e -> {
                     PaymentDto paymentDto = this.convertPaymentToDto(e);
                     paymentDto.setStt(idx.getAndIncrement());

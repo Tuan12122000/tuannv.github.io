@@ -35,7 +35,7 @@ public class ExcelExportController {
         String headerValue = "attachment; filename=users_" + currentDateTime + ".xlsx";
         response.setHeader(headerKey, headerValue);
 
-        List<PaymentDto> paymentList = service.getListPayments();
+        List<PaymentDto> paymentList = service.getListPayments(1);
 
         PaymentExcelExporter excelExporter = new PaymentExcelExporter(paymentList);
 
@@ -53,7 +53,7 @@ public class ExcelExportController {
         String headerValue = "attachment; filename=users_" + currentDateTime + ".xlsx";
         response.setHeader(headerKey, headerValue);
 
-        List<PaymentDto> payment = service.findByUserIdListAllPayment(user.getId());
+        List<PaymentDto> payment = service.findByUserIdListAllPayment(user.getId(), 1);
 
         UserPaymentExcelExporter excelExporter = new UserPaymentExcelExporter(payment);
         excelExporter.export(response);
