@@ -20,11 +20,10 @@ public interface UserService {
     //Payment
     List<Payment> listAllPayment();
 
-    List<PaymentDto> getListPayments();
+    List<PaymentDto> getListPayments(int status);
 
-    List<PaymentDto> getPayments();
 
-    List<PaymentDto> findByUserIdListAllPayment(Long userId);
+    List<PaymentDto> findByUserIdListAllPayment(Long userId, int status);
 
     List<PaymentDto> searchPaymentByOrderCode(Long userId, String orderCode);
 
