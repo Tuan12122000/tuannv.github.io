@@ -158,6 +158,7 @@ public class AuthController {
         if (omipayCallBackDto.getOrder_code() != null) {
             userService.updatePaymentByOrderCode(omipayCallBackDto.getOrder_code(), 1);
         }
+        userService.saveRep(omipayCallBackDto);
         return "redirect:/user/payments/list";
     }
 

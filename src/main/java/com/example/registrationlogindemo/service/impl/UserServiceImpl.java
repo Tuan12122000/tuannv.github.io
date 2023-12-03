@@ -1,11 +1,14 @@
 package com.example.registrationlogindemo.service.impl;
 
 import com.example.registrationlogindemo.Constant;
+import com.example.registrationlogindemo.dto.OmipayCallBackDto;
 import com.example.registrationlogindemo.dto.PaymentDto;
 import com.example.registrationlogindemo.dto.UserDto;
+import com.example.registrationlogindemo.entity.OmipayResponse;
 import com.example.registrationlogindemo.entity.Payment;
 import com.example.registrationlogindemo.entity.Role;
 import com.example.registrationlogindemo.entity.User;
+import com.example.registrationlogindemo.repository.OmipayResponseRepository;
 import com.example.registrationlogindemo.repository.PaymentRepository;
 import com.example.registrationlogindemo.repository.RoleRepository;
 import com.example.registrationlogindemo.repository.UserRepository;
@@ -35,6 +38,7 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final PaymentRepository paymentRepository;
+    private final OmipayResponseRepository omipayResponseRepository;
 
 
     @Override
@@ -210,5 +214,15 @@ public class UserServiceImpl implements UserService {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
         return this.paymentRepository.findByOrderCodeLike(orderCode, pageable)
                 .map(this::convertPaymentToDto);
+    }
+
+    @Override
+    public void saveRep(OmipayCallBackDto omipayCallBackDto) {
+        OmipayResponse saveRep = new OmipayResponse();
+        saveRep.setTransactionInfo(omipayCallBackDto.getTransaction_info());
+        saveRep.setPrice(omipayCallBackDto.getPrice());
+        saveRep.setPaymentId(omipayCallBackDto.getPayment_id());
+        saveRep.setPaymentType(omipayCallBackDto.getPayment_type());
+        omipayResponseRepository.save(saveRep);
     }
 }
