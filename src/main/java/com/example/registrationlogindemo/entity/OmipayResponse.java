@@ -31,4 +31,5 @@ public class OmipayResponse implements Serializable {
     private String bankCode;
     private String cardNumber;
     private String tokenization;
+    private String timeActive;
 }

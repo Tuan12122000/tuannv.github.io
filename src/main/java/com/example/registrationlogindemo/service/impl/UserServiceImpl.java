@@ -218,11 +218,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void saveRep(OmipayCallBackDto omipayCallBackDto) {
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String strDate = formatter.format(date);
         OmipayResponse saveRep = new OmipayResponse();
         saveRep.setTransactionInfo(omipayCallBackDto.getTransaction_info());
         saveRep.setPrice(omipayCallBackDto.getPrice());
         saveRep.setPaymentId(omipayCallBackDto.getPayment_id());
         saveRep.setPaymentType(omipayCallBackDto.getPayment_type());
+        saveRep.setOrderCode(omipayCallBackDto.getOrder_code());
+        saveRep.setTimeActive(strDate);
         omipayResponseRepository.save(saveRep);
     }
 }
