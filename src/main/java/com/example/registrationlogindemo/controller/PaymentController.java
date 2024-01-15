@@ -50,7 +50,6 @@ public class PaymentController {
         if (StringUtils.isBlank(keyword)) {
             keyword = "";
         }
-        ;
         Page<PaymentDto> page = userService.findPaginated(pageNo, pageSize, sortField, sortDir, user.getId(), "%" + keyword + "%");
         List<PaymentDto> payments = page.getContent();
 
