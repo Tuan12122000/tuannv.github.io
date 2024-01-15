@@ -44,19 +44,19 @@ public class AuthController {
     private final UserRepository userRepository;
     private final PaymentRepository paymentRepository;
 
-    @Value("Curren")
+    @Value("${Curren}")
     private String Curren;
-    @Value("MERCHANT_SITE_CODE")
+    @Value("${MERCHANT_SITE_CODE}")
     private String MERCHANT_SITE_CODE;
-    @Value("Email")
+    @Value("${Email}")
     private String Email;
-    @Value("SECURE_PASS")
+    @Value("${SECURE_PASS}")
     private String SECURE_PASS;
-    @Value("URL_SEND_OMIPAY")
+    @Value("${URL_SEND_OMIPAY}")
     private String URL_SEND_OMIPAY;
-    @Value("RETURN_URL_OMIPAY")
+    @Value("${RETURN_URL_OMIPAY}")
     private String RETURN_URL_OMIPAY;
-    @Value("CANCEL_URL_OMIPAY")
+    @Value("${CANCEL_URL_OMIPAY}")
     private String CANCEL_URL_OMIPAY;
 
 
