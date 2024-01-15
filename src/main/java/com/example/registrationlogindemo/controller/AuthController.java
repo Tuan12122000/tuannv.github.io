@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -42,6 +43,21 @@ public class AuthController {
     private final UserService userService;
     private final UserRepository userRepository;
     private final PaymentRepository paymentRepository;
+
+    @Value("Curren")
+    private String Curren;
+    @Value("MERCHANT_SITE_CODE")
+    private String MERCHANT_SITE_CODE;
+    @Value("Email")
+    private String Email;
+    @Value("SECURE_PASS")
+    private String SECURE_PASS;
+    @Value("URL_SEND_OMIPAY")
+    private String URL_SEND_OMIPAY;
+    @Value("RETURN_URL_OMIPAY")
+    private String RETURN_URL_OMIPAY;
+    @Value("CANCEL_URL_OMIPAY")
+    private String CANCEL_URL_OMIPAY;
 
 
     @GetMapping("/")
@@ -132,21 +148,21 @@ public class AuthController {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Accept", "application/json");
         MultiValueMap<String, String> mapParams = new LinkedMultiValueMap<>();
-        mapParams.add("merchant_site_code", Constant.MERCHANT_SITE_CODE);
-        mapParams.add("return_url", Constant.RETURN_URL_OMIPAY);
-        mapParams.add("cancel_url", Constant.CANCEL_URL_OMIPAY);
-        mapParams.add("notify_url", Constant.RETURN_URL_OMIPAY);
-        mapParams.add("receiver", Constant.EmailDemo);
+        mapParams.add("merchant_site_code", MERCHANT_SITE_CODE);
+        mapParams.add("return_url", RETURN_URL_OMIPAY);
+        mapParams.add("cancel_url", CANCEL_URL_OMIPAY);
+        mapParams.add("notify_url", RETURN_URL_OMIPAY);
+        mapParams.add("receiver", Email);
         mapParams.add("order_code", orderCode);
         mapParams.add("price", amount);
-        mapParams.add("currency", Constant.Curren);
-        mapParams.add("secure_pass", Constant.SECURE_PASS);
-        String secure_code = Constant.getMD5(Constant.MERCHANT_SITE_CODE + '|' + Constant.EmailDemo + '|' + amount + '|' + Constant.Curren + '|' + orderCode + '|' + Constant.SECURE_PASS);
+        mapParams.add("currency", Curren);
+        mapParams.add("secure_pass", SECURE_PASS);
+        String secure_code = Constant.getMD5(MERCHANT_SITE_CODE + '|' + Email + '|' + amount + '|' + Curren + '|' + orderCode + '|' + SECURE_PASS);
         mapParams.add("secure_code", secure_code);
         mapParams.add("installment", String.valueOf(0));
         //
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        UriComponentsBuilder builderUri = UriComponentsBuilder.fromHttpUrl(Constant.URL_SEND_OMIPAY)
+        UriComponentsBuilder builderUri = UriComponentsBuilder.fromHttpUrl(URL_SEND_OMIPAY)
                 .queryParams(mapParams);
         return "redirect:" + builderUri.toUriString();
     }
